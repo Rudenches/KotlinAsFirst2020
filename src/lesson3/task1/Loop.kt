@@ -2,6 +2,7 @@
 
 package lesson3.task1
 
+import lesson1.task1.main
 import kotlin.math.sqrt
 
 // Урок 3: циклы
@@ -192,7 +193,20 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var allNumbers: ArrayList<Int> = arrayListOf()
+    for (i in 1..n) {
+        var numberList: ArrayList<Int> = arrayListOf()
+        var number = i * i
+        while (number > 0) {
+            numberList.add(number % 10)
+            number /= 10
+        }
+        numberList.reverse()
+        numberList.forEach { allNumbers.add(it) }
+    }
+    return allNumbers[n - 1]
+}
 
 /**
  * Сложная (5 баллов)
@@ -203,4 +217,27 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var primaryList: ArrayList<Int> = arrayListOf()
+    primaryList.add(1)
+    primaryList.add(1)
+
+    var resultList: ArrayList<Int> = arrayListOf()
+
+    for (i in 2..n) {
+        primaryList.add(i, primaryList[i - 1] + primaryList[i - 2])
+    }
+
+    for (i in 0..n) {
+        var fibList: ArrayList<Int> = arrayListOf()
+
+        var fib = primaryList[i]
+        while (fib > 0) {
+            fibList.add(fib % 10)
+            fib /= 10
+        }
+        fibList.reverse()
+        fibList.forEach { resultList.add(it) }
+    }
+    return resultList[n - 1]
+}
