@@ -260,7 +260,53 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+
+fun roman(n: Int): String {
+    var number = n
+    var result = ""
+    var resultList: ArrayList<String> = arrayListOf()
+    var numbersList: ArrayList<Int> = arrayListOf()
+    while (number > 0) {
+        numbersList.add(number % 10)
+        number /= 10
+    }
+    for (i in 0 until numbersList.size) {
+        when (i) {
+            0 -> {
+                when {
+                    numbersList[i] < 4 -> resultList.add("I".repeat(numbersList[i]))
+                    numbersList[i] == 4 -> resultList.add("IV")
+                    numbersList[i] in 5..8 -> resultList.add("V" + "I".repeat(numbersList[i] - 5))
+                    numbersList[i] == 9 -> resultList.add("IX")
+                }
+            }
+            1 -> {
+                when {
+                    numbersList[i] < 4 -> resultList.add("X".repeat(numbersList[i]))
+                    numbersList[i] == 4 -> resultList.add("XL")
+                    numbersList[i] in 5..8 -> resultList.add("L" + "X".repeat(numbersList[i] - 5))
+                    numbersList[i] == 9 -> resultList.add("XC")
+                }
+            }
+            2 -> {
+                when {
+                    numbersList[i] < 4 -> resultList.add("C".repeat(numbersList[i]))
+                    numbersList[i] == 4 -> resultList.add("CD")
+                    numbersList[i] in 5..8 -> resultList.add("D" + "C".repeat(numbersList[i] - 5))
+                    numbersList[i] == 9 -> resultList.add("CM")
+                }
+            }
+            3 -> {
+                when {
+                    numbersList[i] < 4 -> resultList.add("M".repeat(numbersList[i]))
+                }
+            }
+        }
+    }
+    resultList.reverse()
+    resultList.forEach { result += it }
+    return result
+}
 
 /**
  * Очень сложная (7 баллов)
