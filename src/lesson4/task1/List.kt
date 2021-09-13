@@ -315,4 +315,58 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val map = mapOf( 900 to "девятьсот", 800 to "восемьсот", 700 to "семьсот", 600 to "шестьсот", 500 to "пятьсот", 400 to "четыреста",
+        300 to "триста", 200 to "двести", 100 to "сто", 90 to "девяносто", 80 to "восемьдесят", 70 to "семьдесят", 60 to "шестьдесят",
+        50 to "пятьдесят", 40 to "сорок", 30 to "тридцать", 20 to "двадцать", 19 to "девятнадцать", 18 to "восемнадцать", 17 to "семнадцать",
+        16 to "шестнадцать", 15 to "пятнадцать", 14 to "четырнадцать", 13 to "тринадцать", 12 to "двенадцать", 11 to "одинадцать",
+        10 to "десять", 9 to "девять", 8 to "восемь", 7 to "семь", 6 to "шесть", 5 to "пять", 4 to "четыре", 3 to "три", 2 to "два",
+        1 to "один"
+    )
+    var numberTopString = ""
+    var numberBottomString = ""
+    var suffix = "тысяч"
+    var number = n
+    var numberTop = number / 1000
+    var numberBottom = number % 1000
+
+    while (numberTop > 0) {
+        for ((key, value) in map) {
+            if (numberTop / key > 0) {
+                when (key) {
+                    1 -> {
+                        numberTopString += "одна "
+                        suffix = "тысячи"
+                    }
+                    2 -> {
+                        numberTopString += "две "
+                        suffix = "тысячи"
+                    }
+                    else -> {
+                        numberTopString += "$value "
+                    }
+                }
+                numberTop -= key
+            }
+        }
+    }
+
+    while (numberBottom > 0) {
+        for ((key, value) in map) {
+            if (numberBottom / key > 0) {
+                numberBottomString += "$value "
+                numberBottom -= key
+            }
+        }
+    }
+
+    if (numberTopString.isNotEmpty()) {
+        numberTopString += "$suffix "
+    }
+    if (numberBottomString.isNotEmpty()) {
+        numberBottomString = numberBottomString.substring(0, numberBottomString.length - 1)
+    } else {
+        numberTopString = numberTopString.substring(0, numberTopString.length -1)
+    }
+    return numberTopString + numberBottomString
+}
