@@ -336,9 +336,13 @@ fun russian(n: Int): String {
                 when (key) {
                     1 -> {
                         numberTopString += "одна "
-                        suffix = "тысячи"
+                        suffix = "тысяча"
                     }
                     2 -> {
+                        numberTopString += "две "
+                        suffix = "тысячи"
+                    }
+                    3 -> {
                         numberTopString += "две "
                         suffix = "тысячи"
                     }
