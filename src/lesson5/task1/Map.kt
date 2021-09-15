@@ -286,14 +286,14 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
         // тут я реализовал бинарный поиск, но изменил под нашу задачу, а именно, чтобы в пару не попало 2 числа с одним индексом,
         // и ищется такое число, чтобы list[i] + найденное нами число = number
         var leftBorder = 0
-        var rightBorder = list.size
-        while (leftBorder < rightBorder) {
+        var rightBorder = list.size - 1
+        while (leftBorder <= rightBorder) {
             var middle = (leftBorder + rightBorder) / 2
             if (findValue == list[middle] && middle != i) {
                 findValueIndex = middle
                 break
             }
-            if (findValue < list[middle]) rightBorder = middle
+            if (findValue < list[middle]) rightBorder = middle - 1
             else leftBorder = middle + 1
         }
 
