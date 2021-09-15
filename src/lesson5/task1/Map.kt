@@ -287,6 +287,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
         // и ищется такое число, чтобы list[i] + найденное нами число = number
         var leftBorder = 0
         var rightBorder = list.size - 1
+        list.sorted()
         while (leftBorder <= rightBorder) {
             var middle = (leftBorder + rightBorder) / 2
             if (findValue == list[middle] && middle != i) {
