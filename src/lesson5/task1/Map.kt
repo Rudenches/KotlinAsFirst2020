@@ -277,7 +277,32 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+// реализовать бинарный поиск, работать будет за n*log(n)
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    for (i in list.indices) {
+        val findValue = number - list[i]
+        var findValueIndex = -1
+
+        // тут я реализовал бинарный поиск, но изменил под нашу задачу, а именно, чтобы в пару не попало 2 числа с одним индексом,
+        // и ищется такое число, чтобы list[i] + найденное нами число = number
+        var leftBorder = 0
+        var rightBorder = list.size
+        while (leftBorder < rightBorder) {
+            var middle = (leftBorder + rightBorder) / 2
+            if (findValue == list[middle] && middle != i) {
+                findValueIndex = middle
+                break
+            }
+            if (findValue < list[middle]) rightBorder = middle
+            else leftBorder = middle + 1
+        }
+
+        if (findValueIndex != -1) {
+            return Pair(i, findValueIndex)
+        }
+    }
+    return Pair(-1, -1)
+}
 
 /**
  * Очень сложная (8 баллов)
