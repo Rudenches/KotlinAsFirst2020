@@ -277,43 +277,50 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
+
 // реализовать бинарный поиск, работать будет за n*log(n)
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    // этот список нам нужен, потому что текущий мы отсортируем, чтобы бинарный поиск реализовать
+    // создаем две копии изначального списка, потому что один мы отсортируем, чтобы работал бинарный поиск
+    var newList = arrayListOf<Int>()
     val oldList = arrayListOf<Int>()
-    list.forEach { oldList.add(it) }
 
-    var findIndexFirst = -1
-    var findIndexSecond = -1
+    var firstIndex = -1
+    var secondIndex = -1
+    list.forEach {
+        newList.add(it)
+        oldList.add(it)
+    }
 
-    list.sorted()
-    for (i in list.indices) {
+    newList.sort()
 
-        val findValue = number - list[i]
-        var isFindValue = false
+    for (i in newList.indices) {
+        val findNumber = number - newList[i]
+        val currentNumber = newList[i]
+
+        var isFindNumber = false
 
         var leftBorder = 0
-        var rightBorder = list.size - 1
-        // бинарный поиск, но измененный под нашу задачу. Ищем findValue такое, что findValue + list[i] = number.
-        // Также индексы не должны быть совпадать
+        var rightBorder = newList.size - 1
+
+        // сам бинарный поиск, вернет true, если findNumber есть в списке с учетом того,
+        // что индекс findNumber не совпадает с текущим индексом элемента
         while (leftBorder <= rightBorder) {
             var middle = (leftBorder + rightBorder) / 2
-            if (findValue == list[middle] && middle != i) {
-                isFindValue = true
+            if (findNumber == newList[middle] && middle != i) {
+                isFindNumber = true
                 break
             }
-            if (findValue < list[middle]) rightBorder = middle - 1
+            if (findNumber < newList[middle]) rightBorder = middle - 1
             else leftBorder = middle + 1
         }
 
-        if (isFindValue) {
-            for (j in oldList.indices) {
-                if (oldList[j] == findValue && j != findIndexFirst) findIndexSecond = j
+        if (isFindNumber) {
+            // т.к элемент был найден, то можно пройтись по старому списку и найти значения индексов
+            for (j in 0 until oldList.size) {
+                if (oldList[j] == currentNumber && j != secondIndex) firstIndex = j
+                if (oldList[j] == findNumber && j != firstIndex) secondIndex = j
             }
-            for (j in oldList.indices) {
-                if (oldList[j] == list[i] && j != findIndexSecond) findIndexFirst = j
-            }
-            return Pair(findIndexFirst, findIndexSecond)
+            return Pair(firstIndex, secondIndex)
         }
     }
     return Pair(-1, -1)

@@ -305,12 +305,19 @@ class Tests {
     @Tag("6")
     fun findSumOfTwo() {
         assertEquals(
-            Pair(-1, -1),
-            findSumOfTwo(emptyList(), 1)
-        )
-        assertEquals(
             Pair(0, 2),
             findSumOfTwo(listOf(1, 2, 3), 4)
+        )
+        assertEquals(
+            Pair(0, 67),
+            findSumOfTwo(listOf(17018, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29071,
+                38927, 40653, 40699, 40700, 0, 46951, 40699, 40699, 44165, 40699, 40700, 0, 12423, 47307, 1, 27984, 20685,
+                40699, 40699, 21734, 1, 27469, 40700, 0, 1, 40700, 19215, 1, 4765, 1, 0, 1, 25549, 12515, 40699, 40699,
+                19245, 1, 33662, 1, 49176, 39311, 40699, 1, 21010, 0, 34062, 1, 43746, 44325, 40699, 20993), 56329)
+        )
+        assertEquals(
+            Pair(-1, -1),
+            findSumOfTwo(emptyList(), 1)
         )
         assertEquals(
             Pair(-1, -1),
