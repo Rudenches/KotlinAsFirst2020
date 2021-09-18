@@ -233,21 +233,16 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int {
-    val characters = "abcdefghijklmnopqrstuvwxyz"
+    val asciiCodes = arrayOf(
+        "0", "1", "2", "3", "4", "5", "6", "7", "8",
+        "9", "a", "b", "c", "d", "e", "f", "g", "h",
+        "i", "j", "k", "l", "m", "n", "o", "p", "q",
+        "r", "s", "t", "u", "v", "w", "x", "y", "z")
     var number = 0.0
-
     for (i in str.indices) {
-
-        for (j in characters.indices) {
-            if (str[i] == characters[j]) {
-                number += (10 + j) * base.toDouble().pow(str.length - i - 1)
-                break
-            }
+        for (j in asciiCodes.indices) {
+            number += if (str[i].toString() == asciiCodes[j]) j * base.toDouble().pow(str.length - i - 1) else 0.0
         }
-        if (str[i] in "0123456789") {
-            number += (str[i].toInt() - 48) * base.toDouble().pow(str.length - i - 1)
-        }
-
     }
     return number.toInt()
 }
@@ -262,49 +257,34 @@ fun decimalFromString(str: String, base: Int): Int {
  */
 
 fun roman(n: Int): String {
+    // * 1
+    val romanNumbersFor0 = listOf("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX")
+    // * 10
+    val romanNumbersFor1 = listOf("X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC")
+    // * 100
+    val romanNumbersFor2 = listOf("C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM")
+    // * 1000
+    val romanNumbersFor3 = listOf("M", "MM", "MMM")
+
+    val arrayCategoryNumbers = arrayOf(romanNumbersFor3, romanNumbersFor2, romanNumbersFor1, romanNumbersFor0)
     var number = n
     var result = ""
-    var resultList: ArrayList<String> = arrayListOf()
-    var numbersList: ArrayList<Int> = arrayListOf()
+
+    val numberList = arrayListOf<Int>()
     while (number > 0) {
-        numbersList.add(number % 10)
+        numberList.add(number % 10)
         number /= 10
     }
-    for (i in 0 until numbersList.size) {
-        when (i) {
-            0 -> {
-                when {
-                    numbersList[i] < 4 -> resultList.add("I".repeat(numbersList[i]))
-                    numbersList[i] == 4 -> resultList.add("IV")
-                    numbersList[i] in 5..8 -> resultList.add("V" + "I".repeat(numbersList[i] - 5))
-                    numbersList[i] == 9 -> resultList.add("IX")
-                }
-            }
-            1 -> {
-                when {
-                    numbersList[i] < 4 -> resultList.add("X".repeat(numbersList[i]))
-                    numbersList[i] == 4 -> resultList.add("XL")
-                    numbersList[i] in 5..8 -> resultList.add("L" + "X".repeat(numbersList[i] - 5))
-                    numbersList[i] == 9 -> resultList.add("XC")
-                }
-            }
-            2 -> {
-                when {
-                    numbersList[i] < 4 -> resultList.add("C".repeat(numbersList[i]))
-                    numbersList[i] == 4 -> resultList.add("CD")
-                    numbersList[i] in 5..8 -> resultList.add("D" + "C".repeat(numbersList[i] - 5))
-                    numbersList[i] == 9 -> resultList.add("CM")
-                }
-            }
-            3 -> {
-                when {
-                    numbersList[i] < 4 -> resultList.add("M".repeat(numbersList[i]))
-                }
-            }
+
+    for (i in 0..(3 - numberList.size)) {
+        numberList.add(0)
+    }
+    numberList.reverse()
+    for (i in 0..3) {
+        if (numberList[i] > 0) {
+            result += arrayCategoryNumbers[i][numberList[i] - 1]
         }
     }
-    resultList.reverse()
-    resultList.forEach { result += it }
     return result
 }
 

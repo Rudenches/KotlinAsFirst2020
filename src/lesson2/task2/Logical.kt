@@ -52,10 +52,7 @@ fun circleInside(
     x2: Double, y2: Double, r2: Double
 ): Boolean {
     var accessLen = r2 - r1
-    if (accessLen >= sqrt(abs(x2 - x1).pow(2) + abs(y2 - y1).pow(2))) {
-        return true
-    }
-    return false
+    return (accessLen >= sqrt(abs(x2 - x1).pow(2) + abs(y2 - y1).pow(2)))
 }
 
 /**

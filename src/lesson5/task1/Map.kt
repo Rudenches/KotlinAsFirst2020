@@ -279,27 +279,39 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  */
 // реализовать бинарный поиск, работать будет за n*log(n)
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    for (i in list.indices) {
-        val findValue = number - list[i]
-        var findValueIndex = -1
+    // этот список нам нужен, потому что текущий мы отсортируем, чтобы бинарный поиск реализовать
+    val oldList = arrayListOf<Int>()
+    list.forEach { oldList.add(it) }
 
-        // тут я реализовал бинарный поиск, но изменил под нашу задачу, а именно, чтобы в пару не попало 2 числа с одним индексом,
-        // и ищется такое число, чтобы list[i] + найденное нами число = number
+    var findIndexFirst = -1
+    var findIndexSecond = -1
+
+    list.sorted()
+    for (i in list.indices) {
+
+        val findValue = number - list[i]
+        var isFindValue = false
+
         var leftBorder = 0
         var rightBorder = list.size - 1
-        list.sorted()
+        // бинарный поиск, но измененный под нашу задачу. Ищем findValue такое, что findValue + list[i] = number.
+        // Также индексы не должны быть совпадать
         while (leftBorder <= rightBorder) {
             var middle = (leftBorder + rightBorder) / 2
             if (findValue == list[middle] && middle != i) {
-                findValueIndex = middle
+                isFindValue = true
                 break
             }
             if (findValue < list[middle]) rightBorder = middle - 1
             else leftBorder = middle + 1
         }
 
-        if (findValueIndex != -1) {
-            return Pair(i, findValueIndex)
+        if (isFindValue) {
+            for (j in oldList.indices) {
+                if (oldList[j] == list[i] && j != findIndexSecond) findIndexFirst = j
+                if (oldList[j] == findValue && j != findIndexFirst) findIndexSecond = j
+            }
+            return Pair(findIndexFirst, findIndexSecond)
         }
     }
     return Pair(-1, -1)

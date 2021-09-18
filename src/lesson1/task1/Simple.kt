@@ -134,16 +134,18 @@ fun accountInThreeYears(initial: Int, percent: Int): Double {
  */
 fun numberRevert(number: Int): Int {
     var inputNumber = number
-    var result = 0.0;
-    var numberList: ArrayList<Int> = arrayListOf()
+    var inputNumber2 = number
+    var result = 0.0
+    var index = 0
+
     while (inputNumber > 0) {
-        numberList.add(inputNumber % 10)
+        index++
         inputNumber /= 10
     }
-
-    for (i in 0 until numberList.size) {
-        result += numberList[i] * 10.0.pow(numberList.size - i - 1)
+    while (inputNumber2 > 0) {
+        index--
+        result += inputNumber2 % 10 * 10.0.pow(index)
+        inputNumber2 /= 10
     }
-
     return result.toInt()
 }

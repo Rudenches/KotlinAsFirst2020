@@ -193,17 +193,23 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
+
+fun a(item: Int): ArrayList<Int> {
+    var number = item
+    val numberList = arrayListOf<Int>()
+    while (number > 0) {
+        numberList.add(number % 10)
+        number /= 10
+    }
+    numberList.reverse()
+    return numberList
+}
+
+
 fun squareSequenceDigit(n: Int): Int {
-    var allNumbers: ArrayList<Int> = arrayListOf()
+    val allNumbers = arrayListOf<Int>()
     for (i in 1..n) {
-        var numberList: ArrayList<Int> = arrayListOf()
-        var number = i * i
-        while (number > 0) {
-            numberList.add(number % 10)
-            number /= 10
-        }
-        numberList.reverse()
-        numberList.forEach { allNumbers.add(it) }
+        a(i * i).forEach { allNumbers.add(it) }
     }
     return allNumbers[n - 1]
 }
@@ -218,26 +224,17 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var primaryList: ArrayList<Int> = arrayListOf()
+    val primaryList = arrayListOf<Int>()
+    val resultList = arrayListOf<Int>()
     primaryList.add(1)
     primaryList.add(1)
-
-    var resultList: ArrayList<Int> = arrayListOf()
 
     for (i in 2..n) {
         primaryList.add(i, primaryList[i - 1] + primaryList[i - 2])
     }
 
     for (i in 0..n) {
-        var fibList: ArrayList<Int> = arrayListOf()
-
-        var fib = primaryList[i]
-        while (fib > 0) {
-            fibList.add(fib % 10)
-            fib /= 10
-        }
-        fibList.reverse()
-        fibList.forEach { resultList.add(it) }
+        a(primaryList[i]).forEach { resultList.add(it) }
     }
     return resultList[n - 1]
 }

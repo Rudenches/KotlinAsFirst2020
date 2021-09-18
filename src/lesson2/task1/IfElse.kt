@@ -112,13 +112,15 @@ fun rookOrBishopThreatens(
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
 ): Int {
-    return if ((rookX == kingX || rookY == kingY) && (abs(bishopY - kingY) == abs(bishopX - kingX))) {
-        3
-    } else if (rookX == kingX || rookY == kingY) {
-        1
-    } else if (abs(bishopY - kingY) == abs(bishopX - kingX)) {
-        2
-    } else 0
+    var attackRook = 0
+    var attackBishop = 0
+    if (rookX == kingX || rookY == kingY) {
+        attackRook = 1
+    }
+    if (abs(bishopY - kingY) == abs(bishopX - kingX)) {
+        attackBishop = 2
+    }
+    return attackBishop + attackRook
 }
 
 /**
