@@ -317,8 +317,8 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
         if (isFindNumber) {
             // т.к элемент был найден, то можно пройтись по старому списку и найти значения индексов
             for (j in 0 until oldList.size) {
-                if (oldList[j] == currentNumber && j != secondIndex) firstIndex = j
-                if (oldList[j] == findNumber && j != firstIndex) secondIndex = j
+                if (oldList[j] == currentNumber && j != secondIndex && firstIndex == -1) firstIndex = j
+                if (oldList[j] == findNumber && j != firstIndex && secondIndex == -1) secondIndex = j
                 if (firstIndex > 0 && secondIndex > 0) break
             }
             return Pair(firstIndex, secondIndex)
