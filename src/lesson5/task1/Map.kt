@@ -354,6 +354,9 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val masses = arrayListOf<Int>()
     val values = arrayListOf<Int>()
     val names = arrayListOf<String>()
+    masses.add(0)
+    values.add(0)
+    names.add("")
     for ((key, value) in treasures) {
         masses.add(value.first)
         values.add(value.second)
@@ -372,13 +375,11 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
 
     // вся логика
     for (i in 1 until capacity + 1) {
-        for (j in 1 until values.size + 1) {
-            if (masses[j - 1] <= i) {
-                if (values[j - 1] + matrix[i - masses[j - 1]][j - 1] > matrix[i][j - 1]) {
-                    matrix[i][j] = values[j - 1] + matrix[i - masses[j - 1]][j - 1]
-                    matrixNames[i][j] = matrixNames[i - masses[j - 1]][j - 1]
-                    matrixNames[i][j].add(names[j - 1])
-                }
+        for (j in 1 until values.size) {
+            if (masses[j] <= i && values[j] + matrix[i - masses[j]][j - 1] > matrix[i][j - 1]) {
+                matrix[i][j] = values[j] + matrix[i - masses[j]][j - 1]
+                matrixNames[i][j] = matrixNames[i - masses[j]][j - 1]
+                matrixNames[i][j].add(names[j])
             } else {
                 matrix[i][j] = matrix[i][j - 1]
                 matrixNames[i][j] = matrixNames[i][j - 1]
