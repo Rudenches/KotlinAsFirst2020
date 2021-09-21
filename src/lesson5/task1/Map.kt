@@ -372,7 +372,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
 
     // вся логика
     for (i in 1 until capacity + 1) {
-        for (j in 1 until values.size) {
+        for (j in 1 until values.size + 1) {
             if (masses[j - 1] <= i) {
                 if (values[j - 1] + matrix[i - masses[j - 1]][j - 1] > matrix[i][j - 1]) {
                     matrix[i][j] = values[j - 1] + matrix[i - masses[j - 1]][j - 1]
