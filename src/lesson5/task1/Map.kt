@@ -349,4 +349,40 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val masses = arrayListOf<Int>()
+    val values = arrayListOf<Int>()
+    val names = arrayListOf<String>()
+    masses.add(0)
+    values.add(0)
+    names.add("")
+    for ((key, value) in treasures) {
+        masses.add(value.first)
+        values.add(value.second)
+        names.add(key)
+    }
+    var matrix = Array(capacity + 1) { IntArray(values.size + 1) }
+    var matrixNames = Array(capacity + 1) {
+        Array(values.size + 1) { ArrayList<String>() }
+    }
+    for (i in 0..capacity) {
+        for (j in 0..values.size) {
+            matrix[i][j] = 0
+        }
+    }
+    for (i in 1 until capacity + 1) {
+        for (j in 1 until values.size) {
+            matrix[i][j] = matrix[i][j - 1]
+            matrixNames[i][j] = matrixNames[i][j - 1]
+            if (masses[j] <= i) {
+                if (values[j] + matrix[i - masses[j]][j-1] > matrix[i][j - 1]) {
+                    matrix[i][j] = values[j] + matrix[i - masses[j]][j-1]
+                    matrixNames[i][j].add(names[j])
+                }
+            }
+        }
+    }
+
+    // доделать, чтобы вернуло множество
+    return matrixNames[capacity][values.size - 1].toSet()
+}
