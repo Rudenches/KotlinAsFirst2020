@@ -380,13 +380,15 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             matrix[i][j] = matrix[i][j - 1]
             matrixNames[i][j] = matrixNames[i][j - 1]
 
-            if (masses[j] <= i && (values[j] + matrix[i - masses[j]][j - 1] > matrix[i][j - 1])) {
-                matrix[i][j] = values[j] + matrix[i - masses[j]][j - 1]
-                matrixNames[i][j] = matrixNames[i - masses[j]][j - 1]
-                matrixNames[i][j].add(names[j])
+            if (masses[j] <= i) {
+                if (values[j] + matrix[i - masses[j]][j - 1] > matrix[i][j - 1]) {
+                    matrix[i][j] = values[j] + matrix[i - masses[j]][j - 1]
+                    matrixNames[i][j] = matrixNames[i - masses[j]][j - 1]
+                    matrixNames[i][j].add(names[j])
+                }
             }
         }
     }
 
-    return matrixNames[capacity][values.size - 2].toSet()
+    return matrixNames[capacity][values.size - 1].toSet()
 }
