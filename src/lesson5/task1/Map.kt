@@ -388,5 +388,5 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         }
     }
 
-    return matrixNames[capacity][values.size - 1].toSet()
+    return matrixNames[capacity][values.size - 2].toSet()
 }
