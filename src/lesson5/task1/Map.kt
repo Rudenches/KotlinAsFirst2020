@@ -350,9 +350,11 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  */
 
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    // списки с массой, ценной, названием каждого предмета
     val masses = arrayListOf<Int>()
     val values = arrayListOf<Int>()
     val names = arrayListOf<String>()
+    // добавил нулевые элементы, чтобы в самой динамической формуле не путаться с индексами
     masses.add(0)
     values.add(0)
     names.add("")
@@ -361,18 +363,21 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         values.add(value.second)
         names.add(key)
     }
-    var matrix = Array(capacity + 1) { IntArray(values.size) }
-    var matrixNames = Array(capacity + 1) {
-        Array(values.size + 1) { ArrayList<String>() }
-    }
+
+    // матрица с макс ценной на каждую массу и кол-во предметов
+    var matrix = Array(capacity + 1) { IntArray(values.size + 1) }
+    // матрица со списком для каждой массы и кол-ва предметов
+    var matrixNames = Array(capacity + 1) { Array(values.size + 1) { ArrayList<String>() } }
     for (i in 0..capacity) {
-        for (j in 0 until values.size) {
+        for (j in 0..values.size) {
             matrix[i][j] = 0
         }
     }
+
+    // вся логика
     for (i in 1 until capacity + 1) {
         for (j in 1 until values.size) {
-            if (masses[j] <= i && ((values[j] + matrix[i - masses[j]][j - 1]) > matrix[i][j - 1])) {
+            if (masses[j] <= i && (values[j] + matrix[i - masses[j]][j - 1] > matrix[i][j - 1])) {
                 matrix[i][j] = values[j] + matrix[i - masses[j]][j - 1]
                 matrixNames[i][j] = matrixNames[i - masses[j]][j - 1]
                 matrixNames[i][j].add(names[j])
@@ -380,17 +385,8 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
                 matrix[i][j] = matrix[i][j - 1]
                 matrixNames[i][j] = matrixNames[i][j - 1]
             }
-//            matrix[i][j] = matrix[i][j - 1]
-//            matrixNames[i][j] = matrixNames[i][j - 1]
-//            if (masses[j] <= i) {
-//                    if (values[j] + matrix[i - masses[j]][j - 1] > matrix[i][j - 1]) {
-//                        matrix[i][j] = values[j] + matrix[i - masses[j]][j - 1]
-//                        matrixNames[i][j].add(names[j])
-//                }
-//            }
         }
     }
 
-    // доделать, чтобы вернуло множество
     return matrixNames[capacity][values.size - 1].toSet()
 }
