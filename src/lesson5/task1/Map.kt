@@ -354,10 +354,6 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val masses = arrayListOf<Int>()
     val values = arrayListOf<Int>()
     val names = arrayListOf<String>()
-    // добавил нулевые элементы, чтобы в самой динамической формуле не путаться с индексами
-    masses.add(0)
-    values.add(0)
-    names.add("")
     for ((key, value) in treasures) {
         masses.add(value.first)
         values.add(value.second)
@@ -368,8 +364,8 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     var matrix = Array(capacity + 1) { IntArray(values.size + 1) }
     // матрица со списком для каждой массы и кол-ва предметов
     var matrixNames = Array(capacity + 1) { Array(values.size + 1) { ArrayList<String>() } }
-    for (i in 0 until capacity + 1) {
-        for (j in 0 until values.size) {
+    for (i in 0..capacity) {
+        for (j in 0..values.size) {
             matrix[i][j] = 0
         }
     }
@@ -377,11 +373,11 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     // вся логика
     for (i in 1 until capacity + 1) {
         for (j in 1 until values.size) {
-            if (masses[j] <= i) {
-                if (values[j] + matrix[i - masses[j]][j - 1] > matrix[i][j - 1]) {
-                    matrix[i][j] = values[j] + matrix[i - masses[j]][j - 1]
-                    matrixNames[i][j] = matrixNames[i - masses[j]][j - 1]
-                    matrixNames[i][j].add(names[j])
+            if (masses[j - 1] <= i) {
+                if (values[j - 1] + matrix[i - masses[j - 1]][j - 1] > matrix[i][j - 1]) {
+                    matrix[i][j] = values[j - 1] + matrix[i - masses[j - 1]][j - 1]
+                    matrixNames[i][j] = matrixNames[i - masses[j - 1]][j - 1]
+                    matrixNames[i][j].add(names[j - 1])
                 }
             } else {
                 matrix[i][j] = matrix[i][j - 1]
@@ -389,5 +385,6 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             }
         }
     }
+
     return matrixNames[capacity][values.size - 1].toSet()
 }
