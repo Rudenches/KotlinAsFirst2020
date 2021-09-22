@@ -349,7 +349,6 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 
-// пока что-то не решается(((
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     // списки с массой, ценной, названием каждого предмета
     // например, у j-ого предмета название names[j], масса masses[j], стоимость values[j]
@@ -365,7 +364,6 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         values.add(value.second)
         names.add(key)
     }
-
     // матрица с максимальной ценной на каждую массу и кол-во предметов, где масса от 0..capacity
     var matrix = Array(capacity + 1) { IntArray(values.size + 1) }
     // матрица со списком для каждой массы и кол-ва предметов(эта матрица нужна, чтобы хранить на каждом этапе список товаров,
@@ -380,13 +378,13 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     // вся логика
     for (i in 1 until capacity + 1) {
         for (j in 1 until values.size) {
-            if (masses[j] <= i && (values[j] + matrix[i - masses[j]][j - 1] > matrix[i][j - 1])) {
+            if (i >= masses[j] && (matrix[i - masses[j]][j - 1] + values[j]) > matrix[i][j - 1]) {
                 matrix[i][j] = values[j] + matrix[i - masses[j]][j - 1]
-                matrixNames[i][j] = matrixNames[i - masses[j]][j - 1]
+                matrixNames[i][j].addAll(matrixNames[i - masses[j]][j - 1])
                 matrixNames[i][j].add(names[j])
             } else {
                 matrix[i][j] = matrix[i][j - 1]
-                matrixNames[i][j] = matrixNames[i][j - 1]
+                matrixNames[i][j].addAll(matrixNames[i][j - 1])
             }
         }
     }
