@@ -349,11 +349,13 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 
+// пока что-то не решается(((
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     // списки с массой, ценной, названием каждого предмета
     val masses = arrayListOf<Int>()
     val values = arrayListOf<Int>()
     val names = arrayListOf<String>()
+    // добавил нулевые элементы, чтобы не путаться с индексами
     masses.add(0)
     values.add(0)
     names.add("")
