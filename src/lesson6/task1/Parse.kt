@@ -163,6 +163,7 @@ fun firstDuplicateIndex(str: String): Int {
     }
     return -1
 }
+
 /**
  * Сложная (6 баллов)
  *
@@ -181,7 +182,7 @@ fun mostExpensive(description: String): String {
     var products = mutableMapOf<Double, String>()
     var items = description.split(";").toMutableList()
     for (i in items.indices) {
-        if (items[i][0].toString() == " ") {items[i] = items[i].substring(1) }
+        if (items[i][0].toString() == " ") items[i] = items[i].substring(1)
         var listPriceItem = items[i].split(" ")
         if (listPriceItem.size != 2) return ""
         if (listPriceItem[1].toDouble() < 0) return ""
@@ -202,11 +203,57 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
+
+/**
+ * Тут я не совсем понял, нам нужно выбросить exception, если число некоректно, или же просто обраротать строку и понять,
+ * является она неверной. Просто у меня вроде решение должно верно отработать, но выбрасывается exception:
+ * java.lang.IllegalArgumentException: No ru.spbstu.kotlin.typeclass.classes.Monoid instance found for type kotlin.Char
+ * Заранее спасибо за ответ.
+ */
+//var map = mapOf(
+//    "M" to 1000, "CM" to 900, "D" to 500, "CD" to 400, "C" to 100, "XC" to 90,
+//    "L" to 50, "XL" to 40, "X" to 10, "IX" to 9, "V" to 5, "IV" to 4, "I" to 1
+//)
+//fun isCorrectInput(str: String): Boolean {
+//    for (element in str) if (element !in "MCDXLIV") return false
+//
+//    var maxNumber = 5000
+//    for (i in str.indices) {
+//        var substring = str[i].toString()
+//        if (str.length - i > 1) substring.plus(str[i + 1])
+//        maxNumber = if (map.containsKey(substring)) {
+//            if (map.getValue(substring) <= maxNumber) map.getValue(substring)
+//            else return false
+//        } else if (map.getValue(str[i].toString()) <= maxNumber) {
+//            map.getValue(str[i].toString())
+//        } else return false
+//    }
+//    return true
+//}
 fun fromRoman(roman: String): Int = TODO()
-//    var map = mapOf(
-//        "M" to 1000, "CM" to 900, "D" to 500, "CD" to 400, "C" to 100, "XC" to 90,
-//        "L" to 50, "XL" to 40, "X" to 10, "IX" to 9, "V" to 5, "IV" to 4, "I" to 1
-//    )
+// {
+//    var result = 0
+//    if (isCorrectInput(roman)) {
+//        var i = 0
+//        while (i < roman.length) {
+//            if (i == roman.length - 1) {
+//                result += map.getValue(roman[i].toString())
+//                i++
+//            } else {
+//                var substring = roman[i].plus(roman[i + 1]).toString()
+//                if (map.containsKey(substring)) {
+//                    result += map.getValue(substring)
+//                    i += 2
+//                } else {
+//                    result += map.getValue(roman[i].toString())
+//                    i++
+//                }
+//            }
+//        }
+//        return result
+//    }
+//    return -1
+//}
 
 /**
  * Очень сложная (7 баллов)
