@@ -2,6 +2,9 @@
 
 package lesson6.task1
 
+import ru.spbstu.kotlin.typeclass.classes.Monoid.Companion.plus
+import kotlin.math.max
+
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
 // Рекомендуемое количество баллов = 11
@@ -162,7 +165,22 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше нуля либо равны нулю.
  */
-fun mostExpensive(description: String): String = TODO()
+
+fun mostExpensive(description: String): String {
+    if (description.isEmpty()) return ""
+    var maxPrice = 0.0
+    var products = mutableMapOf<Double, String>()
+    var items = description.split(";").toMutableList()
+    for (i in items.indices) {
+        if (items[i][0].toString() == " ") {items[i] = items[i].substring(1) }
+        var listPriceItem = items[i].split(" ")
+        if (listPriceItem.size != 2) return ""
+        if (listPriceItem[1].toDouble() < 0) return ""
+        products[listPriceItem[1].toDouble()] = listPriceItem[0]
+        if (listPriceItem[1].toDouble() > maxPrice) maxPrice = listPriceItem[1].toDouble()
+    }
+    return products[maxPrice].toString()
+}
 
 /**
  * Сложная (6 баллов)
@@ -176,6 +194,10 @@ fun mostExpensive(description: String): String = TODO()
  * Вернуть -1, если roman не является корректным римским числом
  */
 fun fromRoman(roman: String): Int = TODO()
+//    var map = mapOf(
+//        "M" to 1000, "CM" to 900, "D" to 500, "CD" to 400, "C" to 100, "XC" to 90,
+//        "L" to 50, "XL" to 40, "X" to 10, "IX" to 9, "V" to 5, "IV" to 4, "I" to 1
+//    )
 
 /**
  * Очень сложная (7 баллов)
