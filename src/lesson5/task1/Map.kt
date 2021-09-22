@@ -352,6 +352,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
 // пока что-то не решается(((
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     // списки с массой, ценной, названием каждого предмета
+    // например, у j-ого предмета название names[j], масса masses[j], стоимость values[j]
     val masses = arrayListOf<Int>()
     val values = arrayListOf<Int>()
     val names = arrayListOf<String>()
@@ -365,9 +366,10 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         names.add(key)
     }
 
-    // матрица с макс ценной на каждую массу и кол-во предметов
+    // матрица с максимальной ценной на каждую массу и кол-во предметов, где масса от 0..capacity
     var matrix = Array(capacity + 1) { IntArray(values.size + 1) }
-    // матрица со списком для каждой массы и кол-ва предметов
+    // матрица со списком для каждой массы и кол-ва предметов(эта матрица нужна, чтобы хранить на каждом этапе список товаров,
+    // чтобы по итогу вывести предметы)
     var matrixNames = Array(capacity + 1) { Array(values.size + 1) { ArrayList<String>() } }
     for (i in 0..capacity) {
         for (j in 0..values.size) {
