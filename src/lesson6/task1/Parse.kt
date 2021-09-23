@@ -214,6 +214,7 @@ var map = mapOf(
     "L" to 50, "XL" to 40, "X" to 10, "IX" to 9, "V" to 5, "IV" to 4, "I" to 1
 )
 fun isCorrectInput(str: String): Boolean {
+    if (str.isEmpty()) return false
     for (element in str) if (element !in "MCDXLIV") return false
 
     var maxNumber = 5000
@@ -312,7 +313,7 @@ fun checkIllegalArgumentException(countCells: Int, str: String) {
 }
 fun checkIllegalStateException(totalCells: Int, currentsCell: Int, typeArrow: String) {
     if (typeArrow == "left" && currentsCell - 1 < 0) throw IllegalStateException()
-    if (typeArrow == "right" && currentsCell + 1 > totalCells) throw IllegalStateException()
+    if (typeArrow == "right" && currentsCell + 1 >= totalCells) throw IllegalStateException()
 }
 fun editLeftBracket(index: Int, commands: String): Int {
     var nesting = 0
