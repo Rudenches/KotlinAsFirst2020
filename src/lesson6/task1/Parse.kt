@@ -1,9 +1,8 @@
 @file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
-
 package lesson6.task1
 
-import ru.spbstu.kotlin.typeclass.classes.Monoid.Companion.plus
-import kotlin.math.max
+import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -210,50 +209,53 @@ fun mostExpensive(description: String): String {
  * java.lang.IllegalArgumentException: No ru.spbstu.kotlin.typeclass.classes.Monoid instance found for type kotlin.Char
  * Заранее спасибо за ответ.
  */
-//var map = mapOf(
-//    "M" to 1000, "CM" to 900, "D" to 500, "CD" to 400, "C" to 100, "XC" to 90,
-//    "L" to 50, "XL" to 40, "X" to 10, "IX" to 9, "V" to 5, "IV" to 4, "I" to 1
-//)
-//fun isCorrectInput(str: String): Boolean {
-//    for (element in str) if (element !in "MCDXLIV") return false
-//
-//    var maxNumber = 5000
-//    for (i in str.indices) {
-//        var substring = str[i].toString()
-//        if (str.length - i > 1) substring.plus(str[i + 1])
-//        maxNumber = if (map.containsKey(substring)) {
-//            if (map.getValue(substring) <= maxNumber) map.getValue(substring)
-//            else return false
-//        } else if (map.getValue(str[i].toString()) <= maxNumber) {
-//            map.getValue(str[i].toString())
-//        } else return false
-//    }
-//    return true
-//}
-fun fromRoman(roman: String): Int = TODO()
-// {
-//    var result = 0
-//    if (isCorrectInput(roman)) {
-//        var i = 0
-//        while (i < roman.length) {
-//            if (i == roman.length - 1) {
-//                result += map.getValue(roman[i].toString())
-//                i++
-//            } else {
-//                var substring = roman[i].plus(roman[i + 1]).toString()
-//                if (map.containsKey(substring)) {
-//                    result += map.getValue(substring)
-//                    i += 2
-//                } else {
-//                    result += map.getValue(roman[i].toString())
-//                    i++
-//                }
-//            }
-//        }
-//        return result
-//    }
-//    return -1
-//}
+var map = mapOf(
+    "M" to 1000, "CM" to 900, "D" to 500, "CD" to 400, "C" to 100, "XC" to 90,
+    "L" to 50, "XL" to 40, "X" to 10, "IX" to 9, "V" to 5, "IV" to 4, "I" to 1
+)
+fun isCorrectInput(str: String): Boolean {
+    for (element in str) if (element !in "MCDXLIV") return false
+
+    var maxNumber = 5000
+    var i = 0
+    while (i < str.length) {
+        var substring = str[i].toString()
+        if (str.length - i > 1) substring = substring.plus(str[i + 1])
+        if (map.containsKey(substring)) {
+            if (map.getValue(substring) <= maxNumber) {
+                maxNumber = map.getValue(substring)
+                i += 2
+            } else return false
+        } else if (map.getValue(str[i].toString()) <= maxNumber) {
+            maxNumber = map.getValue(str[i].toString())
+            i++
+        } else return false
+    }
+    return true
+}
+fun fromRoman(roman: String): Int {
+    var result = 0
+    if (isCorrectInput(roman)) {
+        var i = 0
+        while (i < roman.length) {
+            if (i == roman.length - 1) {
+                result += map.getValue(roman[i].toString())
+                i++
+            } else {
+                var substring = roman[i].plus(roman[i + 1].toString())
+                if (map.containsKey(substring)) {
+                    result += map.getValue(substring)
+                    i += 2
+                } else {
+                    result += map.getValue(roman[i].toString())
+                    i++
+                }
+            }
+        }
+        return result
+    }
+    return -1
+}
 
 /**
  * Очень сложная (7 баллов)
@@ -291,4 +293,75 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+
+fun checkIllegalArgumentException(countCells: Int, str: String) {
+    var countLeftBrackets = 0
+    var countRightBrackets = 0
+    var countBordersSteps = countCells / 2
+    for (element in str) {
+        var sign = element.toString()
+        when (sign) {
+            !in "+-><[] " -> throw IllegalArgumentException()
+            "[" -> countLeftBrackets++
+            "]" -> countRightBrackets++
+            ">" -> countBordersSteps++
+            "<" -> countBordersSteps--
+        }
+    }
+    if (countLeftBrackets != countRightBrackets) throw IllegalArgumentException()
+}
+fun checkIllegalStateException(totalCells: Int, currentsCell: Int, typeArrow: String) {
+    if (typeArrow == "left" && currentsCell - 1 < 0) throw IllegalStateException()
+    if (typeArrow == "right" && currentsCell + 1 > totalCells) throw IllegalStateException()
+}
+fun editLeftBracket(index: Int, commands: String): Int {
+    var nesting = 0
+    var returnedIndex = 0
+    for (i in index + 1 until commands.length) {
+        if (commands[i].toString() == "[") nesting--
+        if (commands[i].toString() == "]" && nesting == 0) {
+            returnedIndex = i
+            break
+        }
+        if (commands[i].toString() == "]") nesting++
+    }
+    return returnedIndex
+}
+fun editRightBracket(index: Int, commands: String): Int {
+    var currentIndex = index
+    var nesting = 0
+    var returnedIndex = 0
+    while (true) {
+        currentIndex--
+        if (commands[currentIndex].toString() == "]") nesting--
+        else if (commands[currentIndex].toString() == "[" && nesting == 0) {
+            returnedIndex = currentIndex
+            break
+        } else if (commands[currentIndex].toString() == "[") nesting++
+    }
+    return returnedIndex
+}
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    checkIllegalArgumentException(cells, commands)
+    var cellArray = IntArray(cells) { 0 }
+    var currentCell = cells / 2
+    var step = 0
+    var countSteps = 0
+    while (step < commands.length && countSteps < limit) {
+        var command = commands[step].toString()
+        if (command == ">") {
+            checkIllegalStateException(cells, currentCell, "right")
+            currentCell++
+        } else if (command == "<") {
+            checkIllegalStateException(cells, currentCell, "left")
+            currentCell--
+        } else if (command == "+") cellArray[currentCell]++
+        else if (command == "-") cellArray[currentCell]--
+        else if (command == "[" && cellArray[currentCell] == 0) step = editLeftBracket(step, commands)
+        else if (command == "]" && cellArray[currentCell] != 0) step = editRightBracket(step, commands)
+        step++
+        countSteps++
+    }
+    println(cellArray.toList())
+    return cellArray.toList()
+}
