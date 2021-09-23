@@ -194,7 +194,9 @@ fun cos(x: Double, eps: Double): Double = TODO()
  * Использовать операции со строками в этой задаче запрещается.
  */
 
-fun a(item: Int): ArrayList<Int> {
+
+// да, тут я просто забыл переименовать метод 'a' (
+fun divideNumber(item: Int): ArrayList<Int> {
     var number = item
     val numberList = arrayListOf<Int>()
     while (number > 0) {
@@ -209,7 +211,7 @@ fun a(item: Int): ArrayList<Int> {
 fun squareSequenceDigit(n: Int): Int {
     val allNumbers = arrayListOf<Int>()
     for (i in 1..n) {
-        a(i * i).forEach { allNumbers.add(it) }
+        divideNumber(i * i).forEach { allNumbers.add(it) }
     }
     return allNumbers[n - 1]
 }
@@ -234,7 +236,7 @@ fun fibSequenceDigit(n: Int): Int {
     }
 
     for (i in 0..n) {
-        a(primaryList[i]).forEach { resultList.add(it) }
+        divideNumber(primaryList[i]).forEach { resultList.add(it) }
     }
     return resultList[n - 1]
 }

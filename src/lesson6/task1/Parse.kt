@@ -362,6 +362,5 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         step++
         countSteps++
     }
-    println(cellArray.toList())
     return cellArray.toList()
 }
