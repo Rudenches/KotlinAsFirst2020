@@ -232,19 +232,21 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
+fun pow(number: Int, power: Int): Int {
+    if (power == 0) return 1
+    var result = 1
+    for (i in 1..power) result *= number
+    return result
+}
 fun decimalFromString(str: String, base: Int): Int {
-    val asciiCodes = arrayOf(
-        "0", "1", "2", "3", "4", "5", "6", "7", "8",
-        "9", "a", "b", "c", "d", "e", "f", "g", "h",
-        "i", "j", "k", "l", "m", "n", "o", "p", "q",
-        "r", "s", "t", "u", "v", "w", "x", "y", "z")
-    var number = 0.0
+    val asciiCodes = "0123456789abcdefghijklmnopqrstuvwxyz"
+    var number = 0
     for (i in str.indices) {
         for (j in asciiCodes.indices) {
-            number += if (str[i].toString() == asciiCodes[j]) j * base.toDouble().pow(str.length - i - 1) else 0.0
+            number += if (str[i] == asciiCodes[j]) j * pow(base, str.length - i - 1) else 0
         }
     }
-    return number.toInt()
+    return number
 }
 
 /**
@@ -318,16 +320,10 @@ fun russian(n: Int): String {
                         numberTopString += "одна "
                         suffix = "тысяча"
                     }
-                    2 -> {
-                        numberTopString += "две "
-                        suffix = "тысячи"
-                    }
-                    3 -> {
-                        numberTopString += "три "
-                        suffix = "тысячи"
-                    }
-                    4 -> {
-                        numberTopString += "четыре "
+                    in 2..4 -> {
+                        if (key == 2) numberTopString += "две "
+                        if (key == 3) numberTopString += "три "
+                        if (key == 4) numberTopString += "четыре "
                         suffix = "тысячи"
                     }
                     else -> {
@@ -354,7 +350,7 @@ fun russian(n: Int): String {
     if (numberBottomString.isNotEmpty()) {
         numberBottomString = numberBottomString.substring(0, numberBottomString.length - 1)
     } else {
-        numberTopString = numberTopString.substring(0, numberTopString.length -1)
+        numberTopString = numberTopString.substring(0, numberTopString.length - 1)
     }
     return numberTopString + numberBottomString
 }

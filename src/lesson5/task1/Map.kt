@@ -368,7 +368,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     var matrix = Array(capacity + 1) { IntArray(values.size + 1) }
     // матрица со списком для каждой массы и кол-ва предметов(эта матрица нужна, чтобы хранить на каждом этапе список товаров,
     // чтобы по итогу вывести предметы)
-    var matrixNames = Array(capacity + 1) { Array(values.size + 1) { ArrayList<String>() } }
+    var matrixNames = Array(capacity + 1) { Array(values.size + 1) { "" } }
     for (i in 0..capacity) {
         for (j in 0..values.size) {
             matrix[i][j] = 0
@@ -380,14 +380,17 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         for (j in 1 until values.size) {
             if (i >= masses[j] && (matrix[i - masses[j]][j - 1] + values[j]) > matrix[i][j - 1]) {
                 matrix[i][j] = values[j] + matrix[i - masses[j]][j - 1]
-                matrixNames[i][j].addAll(matrixNames[i - masses[j]][j - 1])
-                matrixNames[i][j].add(names[j])
+                matrixNames[i][j] = matrixNames[i - masses[j]][j - 1]
+                matrixNames[i][j] += "${names[j]} "
             } else {
                 matrix[i][j] = matrix[i][j - 1]
-                matrixNames[i][j].addAll(matrixNames[i][j - 1])
+                matrixNames[i][j] = matrixNames[i][j - 1]
             }
         }
     }
 
-    return matrixNames[capacity][values.size - 1].toSet()
+    var lenLastString = matrixNames[capacity][values.size - 1].length
+    if (lenLastString != 0)
+        return matrixNames[capacity][values.size - 1].substring(0, lenLastString - 1).split(" ").toSet()
+    return setOf()
 }
