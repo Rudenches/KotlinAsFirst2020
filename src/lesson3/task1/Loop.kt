@@ -195,7 +195,7 @@ fun cos(x: Double, eps: Double): Double = TODO()
  */
 
 
-// да, тут я просто забыл переименовать метод 'a' (
+// да, тут я просто забыл переименовать метод 'a' :(
 fun divideNumber(item: Int): ArrayList<Int> {
     var number = item
     val numberList = arrayListOf<Int>()

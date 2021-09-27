@@ -131,6 +131,7 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
+// не забыть фиксануть эту штуку, что нужно исправить, есть в котоеде
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     val cos1: Double = (a * a + b * b - c * c) / (2 * a * b) // вывод из теоремы косинусов c^2 = a^2 + b^2 - 2ab*cos(a)
     val cos2: Double = (c * c + b * b - a * a) / (2 * c * b)
