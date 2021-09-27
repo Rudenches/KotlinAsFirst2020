@@ -88,6 +88,7 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
     fun count(mainString: String, sub: String): Int {
         var count = 0
         var i = -1
+        var lastStep = i
         while (i < mainString.length) {
             var indexI = ++i
             var indexJ = 0
@@ -99,15 +100,12 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
                         count++
                         break
                     }
-                } else {
-                    i = indexI
-                    break
-                }
+                } else break
             }
         }
         return count
     }
-
+    
     val substringsMap = mutableMapOf<String, Int>()
     substrings.forEach { substringsMap[it] = 0 }
     val inputFile = File(inputName)
