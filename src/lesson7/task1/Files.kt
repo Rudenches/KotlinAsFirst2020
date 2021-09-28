@@ -4,6 +4,7 @@ package lesson7.task1
 
 import java.io.BufferedWriter
 import java.io.File
+import kotlin.math.pow
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -105,7 +106,7 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
         }
         return count
     }
-    
+
     val substringsMap = mutableMapOf<String, Int>()
     substrings.forEach { substringsMap[it] = 0 }
     val inputFile = File(inputName)
@@ -356,20 +357,20 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  * Пример входного файла:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
  * Утка по-пекински
-    * Утка
-    * Соус
+ * Утка
+ * Соус
  * Салат Оливье
-    1. Мясо
-        * Или колбаса
-    2. Майонез
-    3. Картофель
-    4. Что-то там ещё
+1. Мясо
+ * Или колбаса
+2. Майонез
+3. Картофель
+4. Что-то там ещё
  * Помидоры
  * Фрукты
-    1. Бананы
-    23. Яблоки
-        1. Красные
-        2. Зелёные
+1. Бананы
+23. Яблоки
+1. Красные
+2. Зелёные
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  *
  *
@@ -560,6 +561,127 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
  */
+// это задание я закинул чмсто погонять по тестам, код лучше не смотреть, отрефакторю потом
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    var remained = lhv
+
+    val writer = File(outputName).bufferedWriter()
+    var lhvString = lhv.toString()
+    var rhvString = rhv.toString()
+    val resultDivision = lhv / rhv
+    val resultStr = resultDivision.toString().split("")
+    val listCalculations = arrayListOf<Int>()
+    for (i in resultStr.indices) {
+        if (resultStr[i].isNotEmpty()) {
+            listCalculations.add(rhv * resultStr[i].toInt())
+        }
+    }
+    // первая строка
+    writer.write(" $lhvString | $rhvString")
+    writer.newLine()
+    // вторая строка
+    writer.write(
+        "-${listCalculations[0]}".plus(" ".repeat(lhvString.length + 3 - listCalculations[0].toString().length))
+            .plus(resultDivision.toString())
+    )
+    writer.newLine()
+    val remainders = arrayListOf<String>()
+    for (i in 0 until listCalculations.size) {
+        var subtractNumber = listCalculations[i] * 10.0.pow(listCalculations.size - 1 - i).toInt()
+        var a = (remained - subtractNumber) / 10.0.pow(listCalculations.size - 1 - i).toInt()
+        var b = a.toString()
+        if (i != listCalculations.size - 1) b =
+            (a * 10 + (remained - subtractNumber) / 10.0.pow(listCalculations.size - 2 - i).toInt() % 10).toString()
+        remained -= subtractNumber
+        if (a == 0) {
+            if (b == "0") {
+                remainders.add("0")
+            } else {
+                remainders.add("0".plus(b))
+            }
+        } else {
+            remainders.add(b)
+        }
+    }
+
+    var offset = 0
+    val listOffsets = arrayListOf<Int>()
+    var l1 = 0
+    var tmpString = listCalculations[0].toString()
+    while (l1 < tmpString.length) {
+        if (tmpString[l1] != lhvString[l1]) {
+            offset += l1
+            listOffsets.add(offset + 1)
+            break
+        } else {
+            if (l1 == tmpString.length - 1) {
+                listOffsets.add(offset + 1)
+                offset++
+                break
+            }
+            l1++
+        }
+    }
+
+    for (i in 1 until listCalculations.size) {
+        var tmpString = listCalculations[i].toString()
+        var tmpString2 = remainders[i - 1]
+        var l1 = 0
+        if (tmpString2[0].toString() == "0") {
+            while (l1 < tmpString.length) {
+                if (tmpString[l1] != tmpString2[l1 + 1]) {
+                    offset += l1
+                    listOffsets.add(offset + 1)
+                    break
+                } else {
+                    if (l1 == tmpString.length - 1) {
+                        offset++
+                        listOffsets.add(offset)
+                        break
+                    }
+                    l1++
+                }
+            }
+        } else {
+            while (l1 < tmpString.length) {
+                if (tmpString[l1] != tmpString2[l1]) {
+                    offset += l1
+                    listOffsets.add(offset + 1)
+                    break
+                } else {
+                    if (l1 == tmpString.length - 1) {
+                        offset++
+                        listOffsets.add(offset)
+                        break
+                    }
+                    l1++
+                }
+            }
+        }
+    }
+
+    writer.write("-".repeat(listCalculations[0].toString().length + 1))
+    writer.newLine()
+    listCalculations.removeAt(0)
+    for (i in 0 until listCalculations.size) {
+        writer.write(" ".repeat(listOffsets[i]).plus("${remainders[i]}"))
+        writer.newLine()
+        if (remainders[i].length > listCalculations[i].toString().length) {
+            writer.write(" ".repeat(listOffsets[i]).plus("-${listCalculations[i]}"))
+            writer.newLine()
+            writer.write(" ".repeat(listOffsets[i]).plus("-".repeat(listCalculations[i].toString().length + 1)))
+            writer.newLine()
+        } else {
+            writer.write(" ".repeat(listOffsets[i] - 1).plus("-${listCalculations[i]}"))
+            writer.newLine()
+            writer.write(" ".repeat(listOffsets[i] - 1).plus("-".repeat(listCalculations[i].toString().length + 1)))
+            writer.newLine()
+        }
+    }
+
+    writer.write(
+        " ".repeat(listOffsets.last()).plus(remainders.last().toString())
+    )
+    writer.newLine()
+    writer.close()
 }
