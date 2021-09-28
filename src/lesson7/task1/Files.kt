@@ -578,6 +578,9 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     }
     // первая строка
     writer.write(" $lhvString | $rhvString")
+    println(" $lhvString | $rhvString")
+    println("-${listCalculations[0]}".plus(" ".repeat(lhvString.length + 3 - listCalculations[0].toString().length))
+        .plus(resultDivision.toString()))
     writer.newLine()
     // вторая строка
     writer.write(
