@@ -660,6 +660,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         }
     }
 
+    var tmp = listCalculations[0].toString().length + 1
     writer.write("-".repeat(listCalculations[0].toString().length + 1))
     writer.newLine()
     listCalculations.removeAt(0)
@@ -669,9 +670,11 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         if (remainders[i].length > listCalculations[i].toString().length) {
             writer.write(" ".repeat(listOffsets[i]).plus("-${listCalculations[i]}"))
             writer.newLine()
+            tmp = listOffsets[i] + listCalculations[i].toString().length + 1
             writer.write(" ".repeat(listOffsets[i]).plus("-".repeat(listCalculations[i].toString().length + 1)))
             writer.newLine()
         } else {
+            tmp = listOffsets[i] + listCalculations[i].toString().length + 1
             writer.write(" ".repeat(listOffsets[i] - 1).plus("-${listCalculations[i]}"))
             writer.newLine()
             writer.write(" ".repeat(listOffsets[i] - 1).plus("-".repeat(listCalculations[i].toString().length + 1)))
@@ -679,9 +682,15 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         }
     }
 
-    writer.write(
-        " ".repeat(listOffsets.last()).plus(remainders.last().toString())
-    )
+    if (listOffsets.size == 1) {
+        writer.write(
+            " ".repeat(tmp - 1).plus(remainders.last().toString())
+        )
+    } else {
+        writer.write(
+            " ".repeat(listOffsets.last()).plus(remainders.last().toString())
+        )
+}
     writer.newLine()
     writer.close()
 }
