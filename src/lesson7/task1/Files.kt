@@ -521,7 +521,7 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  * Пример (для lhv == 19935, rhv == 111):
 19935
- *    111
+ *   111
 --------
 19935
 + 19935
@@ -568,7 +568,6 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
 
     val writer = File(outputName).bufferedWriter()
     var flag = true
-    // частный случай
     if (lhv < rhv && lhv.toString().length == rhv.toString().length) {
         flag = false
         writer.write("$lhv | $rhv")
@@ -582,10 +581,6 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         flag = false
     }
 
-    // генерируем откуда нужно вычесть
-    // идея метода: есть число, например 19935, на входе 19800, тогда возвращаем "1" + "3",
-    // а если это последнее число, то возвращаем чисто остаток
-    // также обновляет subLhv для последующих вычислений
     fun remainder(subLhv: String, subtract: String, cycle: Int, index: Int): String {
         var subLhvInt = subLhv.toInt()
         var subtractInt = subtract.toInt() * 10.0.pow(cycle - 1 - index).toInt()
@@ -626,7 +621,6 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
 
     val strings = arrayListOf<String>()
     if (flag) {
-        // первая строка
         strings.add(" $lhv | $rhv")
         var lastRemained = ""
         for (i in 0 until countCycles) {
@@ -637,7 +631,6 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             if (i == 0) {
                 strings.add(
                     " ".repeat(len - subtract.toString().length - offsets[i]).plus("-$subtract")
-                            // тут изменять откуда вставлять результат
                         .plus(" ".repeat(3 + lhv.toString().length - subtract.toString().length).plus(result))
                 )
             }
