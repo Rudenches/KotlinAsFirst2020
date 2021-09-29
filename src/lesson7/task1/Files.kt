@@ -4,6 +4,7 @@ package lesson7.task1
 
 import java.io.BufferedWriter
 import java.io.File
+import kotlin.math.min
 import kotlin.math.pow
 
 // Урок 7: работа с файлами
@@ -561,7 +562,77 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
  */
-
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+
+    val writer = File(outputName).bufferedWriter()
+
+    // генерируем откуда нужно вычесть
+    // идея метода: есть число, например 19935, на входе 19800, тогда возвращаем "1" + "3",
+    // а если это последнее число, то возвращаем чисто остаток
+    // также обновляет subLhv для последующих вычислений
+    fun remainder(subLhv: String, subtract: String, cycle: Int, index: Int): String {
+        var subLhvInt = subLhv.toInt()
+        var subtractInt = subtract.toInt() * 10.0.pow(cycle - 1 - index).toInt()
+        var result = subLhvInt - subtractInt
+        return if (index + 1 == cycle) result.toString()
+        else {
+            return if (result / 10.0.pow(cycle - 1 - index).toInt() == 0) {
+                "0".plus(result / 10.0.pow(cycle - 2 - index).toInt())
+            } else {
+                (result / 10.0.pow(cycle - 2 - index).toInt()).toString()
+            }
+        }
+    }
+
+    fun updateSubLhv(subLhv: String, subtract: String, cycle: Int, index: Int): String {
+        var subLhvInt = subLhv.toInt()
+        var subtractInt = subtract.toInt() * 10.0.pow(cycle - 1 - index).toInt()
+        var result = subLhvInt - subtractInt
+        return result.toString()
+    }
+
+
+    var tmpLhv = lhv
+    var subLhv = tmpLhv.toString()
+    val result = lhv / rhv
+    val splitResult = result.toString().split("").subList(1, result.toString().length + 1)
+    val countCycles = result.toString().length
+
+    val len = lhv.toString().length
+    var offsets = arrayListOf<Int>()
+    for (i in 0 until countCycles) {
+        offsets.add(countCycles - i - 1)
+    }
+    var offsetsForRemained = arrayListOf<Int>()
+    // доделать, чтобы последний элемент смещался на - 2, а не на -3
+    for (i in 0 until countCycles) {
+        offsetsForRemained.add(countCycles - i - 3)
+    }
+
+    // первая строка
+    writer.write(" $lhv | $rhv")
+    writer.newLine()
+
+    for (i in 0 until countCycles) {
+        var subtract = splitResult[i].toInt() * rhv // то, что надо вычесть
+        var remained = remainder(subLhv, subtract.toString(), countCycles, i)
+        subLhv = updateSubLhv(subLhv, subtract.toString(), countCycles, i)
+
+        // ввод в файл
+        writer.write(" ".repeat(len - subtract.toString().length - offsets[i]))
+        writer.write("-$subtract")
+        if (i == 0) {
+            writer.write(" ".repeat(len + 3 - subtract.toString().length))
+            writer.write("$result")
+        }
+        writer.newLine()
+        writer.write(" ".repeat(len - subtract.toString().length - offsets[i]))
+        writer.write("-".repeat(subtract.toString().length + 1))
+        writer.newLine()
+        if (i + 1 == countCycles) writer.write(" ".repeat(len - remained.length - offsetsForRemained[i] - 1))
+        else writer.write(" ".repeat(len - remained.length - offsetsForRemained[i]))
+        writer.write(remained)
+        writer.newLine()
+    }
+    writer.close()
 }
