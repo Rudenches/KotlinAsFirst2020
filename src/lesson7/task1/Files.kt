@@ -607,7 +607,6 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         return result.toString()
     }
 
-
     var tmpLhv = lhv
     var subLhv = tmpLhv.toString()
     val result = lhv / rhv
@@ -625,34 +624,59 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         offsetsForRemained.add(countCycles - i - 3)
     }
 
+    val strings = arrayListOf<String>()
     if (flag) {
         // первая строка
-        writer.write(" $lhv | $rhv")
-        writer.newLine()
-
+        strings.add(" $lhv | $rhv")
         var lastRemained = ""
         for (i in 0 until countCycles) {
             var subtract = splitResult[i].toInt() * rhv // то, что надо вычесть
             var remained = remainder(subLhv, subtract.toString(), countCycles, i)
             subLhv = updateSubLhv(subLhv, subtract.toString(), countCycles, i)
-
             // ввод в файл
-            writer.write(" ".repeat(len - subtract.toString().length - offsets[i]))
-            writer.write("-$subtract")
             if (i == 0) {
-                writer.write(" ".repeat(len + 3 - subtract.toString().length))
-                writer.write("$result")
+                strings.add(
+                    " ".repeat(len - subtract.toString().length - offsets[i]).plus("-$subtract")
+                            // тут изменять откуда вставлять результат
+                        .plus(" ".repeat(3 + lhv.toString().length - subtract.toString().length).plus(result))
+                )
             }
-            writer.newLine()
-            writer.write(" ".repeat(len - max(subtract.toString().length, lastRemained.length - 1) - offsets[i]))
-            writer.write("-".repeat(max(subtract.toString().length + 1, lastRemained.length)))
-            writer.newLine()
-            if (i + 1 == countCycles) writer.write(" ".repeat(len - remained.length - offsetsForRemained[i] - 1))
-            else writer.write(" ".repeat(len - remained.length - offsetsForRemained[i]))
-            writer.write(remained)
-            writer.newLine()
+            strings.add(" ".repeat(len - subtract.toString().length - offsets[i]).plus("-$subtract"))
+            strings.add(
+                " ".repeat(len - max(subtract.toString().length, lastRemained.length - 1) - offsets[i])
+                    .plus("-".repeat(max(subtract.toString().length + 1, lastRemained.length)))
+            )
+            if (i + 1 == countCycles) strings.add(" ".repeat(len - remained.length - offsetsForRemained[i] - 1).plus(remained))
+            else strings.add(" ".repeat(len - remained.length - offsetsForRemained[i]).plus(remained))
             lastRemained = remained
         }
+    }
+
+    var isFirstElem = true
+    strings.forEach {
+        if (it[0].toString() != " ") {
+            isFirstElem = false
+        }
+    }
+
+    if (isFirstElem) {
+        for (i in 0 until strings.size) strings[i] = strings[i].substring(1)
+        if (strings.isNotEmpty()) {
+            var l = strings[1]
+            for (i in l.indices) {
+                if (l[i].toString() == " ") {
+                    l = l.substring(0, i).plus(l.substring(i + 1))
+                    strings[1] = l
+                    break
+                }
+            }
+        }
+    }
+
+    for (i in 0 until strings.size) {
+        if (i == 2) continue
+        writer.write(strings[i])
+        writer.newLine()
     }
     writer.close()
 }
