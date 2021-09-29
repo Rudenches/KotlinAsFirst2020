@@ -4,6 +4,7 @@ package lesson7.task1
 
 import java.io.BufferedWriter
 import java.io.File
+import java.lang.Integer.max
 import kotlin.math.min
 import kotlin.math.pow
 
@@ -613,6 +614,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     writer.write(" $lhv | $rhv")
     writer.newLine()
 
+    var lastRemained = ""
     for (i in 0 until countCycles) {
         var subtract = splitResult[i].toInt() * rhv // то, что надо вычесть
         var remained = remainder(subLhv, subtract.toString(), countCycles, i)
@@ -626,13 +628,14 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             writer.write("$result")
         }
         writer.newLine()
-        writer.write(" ".repeat(len - subtract.toString().length - offsets[i]))
-        writer.write("-".repeat(subtract.toString().length + 1))
+        writer.write(" ".repeat(len - max(subtract.toString().length, lastRemained.length - 1) - offsets[i]))
+        writer.write("-".repeat(max(subtract.toString().length + 1, lastRemained.length)))
         writer.newLine()
         if (i + 1 == countCycles) writer.write(" ".repeat(len - remained.length - offsetsForRemained[i] - 1))
         else writer.write(" ".repeat(len - remained.length - offsetsForRemained[i]))
         writer.write(remained)
         writer.newLine()
+        lastRemained = remained
     }
     writer.close()
 }
