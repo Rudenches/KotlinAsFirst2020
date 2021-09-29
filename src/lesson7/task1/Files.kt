@@ -566,6 +566,20 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
 
     val writer = File(outputName).bufferedWriter()
+    var flag = true
+    // частный случай
+    if (lhv < rhv && lhv.toString().length == rhv.toString().length) {
+        flag = false
+        writer.write("$lhv | $rhv")
+        writer.newLine()
+        writer.write(" ".repeat(lhv.toString().length - 2).plus("-0"))
+        writer.write("   0")
+        writer.newLine()
+        writer.write("-".repeat(lhv.toString().length))
+        writer.newLine()
+        writer.write("$lhv")
+        flag = false
+    }
 
     // генерируем откуда нужно вычесть
     // идея метода: есть число, например 19935, на входе 19800, тогда возвращаем "1" + "3",
@@ -610,32 +624,34 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         offsetsForRemained.add(countCycles - i - 3)
     }
 
-    // первая строка
-    writer.write(" $lhv | $rhv")
-    writer.newLine()
+    if (flag) {
+        // первая строка
+        writer.write(" $lhv | $rhv")
+        writer.newLine()
 
-    var lastRemained = ""
-    for (i in 0 until countCycles) {
-        var subtract = splitResult[i].toInt() * rhv // то, что надо вычесть
-        var remained = remainder(subLhv, subtract.toString(), countCycles, i)
-        subLhv = updateSubLhv(subLhv, subtract.toString(), countCycles, i)
+        var lastRemained = ""
+        for (i in 0 until countCycles) {
+            var subtract = splitResult[i].toInt() * rhv // то, что надо вычесть
+            var remained = remainder(subLhv, subtract.toString(), countCycles, i)
+            subLhv = updateSubLhv(subLhv, subtract.toString(), countCycles, i)
 
-        // ввод в файл
-        writer.write(" ".repeat(len - subtract.toString().length - offsets[i]))
-        writer.write("-$subtract")
-        if (i == 0) {
-            writer.write(" ".repeat(len + 3 - subtract.toString().length))
-            writer.write("$result")
+            // ввод в файл
+            writer.write(" ".repeat(len - subtract.toString().length - offsets[i]))
+            writer.write("-$subtract")
+            if (i == 0) {
+                writer.write(" ".repeat(len + 3 - subtract.toString().length))
+                writer.write("$result")
+            }
+            writer.newLine()
+            writer.write(" ".repeat(len - max(subtract.toString().length, lastRemained.length - 1) - offsets[i]))
+            writer.write("-".repeat(max(subtract.toString().length + 1, lastRemained.length)))
+            writer.newLine()
+            if (i + 1 == countCycles) writer.write(" ".repeat(len - remained.length - offsetsForRemained[i] - 1))
+            else writer.write(" ".repeat(len - remained.length - offsetsForRemained[i]))
+            writer.write(remained)
+            writer.newLine()
+            lastRemained = remained
         }
-        writer.newLine()
-        writer.write(" ".repeat(len - max(subtract.toString().length, lastRemained.length - 1) - offsets[i]))
-        writer.write("-".repeat(max(subtract.toString().length + 1, lastRemained.length)))
-        writer.newLine()
-        if (i + 1 == countCycles) writer.write(" ".repeat(len - remained.length - offsetsForRemained[i] - 1))
-        else writer.write(" ".repeat(len - remained.length - offsetsForRemained[i]))
-        writer.write(remained)
-        writer.newLine()
-        lastRemained = remained
     }
     writer.close()
 }
