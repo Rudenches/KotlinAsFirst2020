@@ -661,6 +661,16 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
 
     if (isFirstElem) {
         for (i in 0 until strings.size) strings[i] = strings[i].substring(1)
+        if (strings.isNotEmpty()) {
+            var l = strings[1]
+            for (i in l.indices) {
+                if (l[i].toString() == " ") {
+                    l = l.substring(0, i).plus(l.substring(i + 1))
+                    strings[1] = l
+                    break
+                }
+            }
+        }
     }
 
     for (i in 0 until strings.size) {
