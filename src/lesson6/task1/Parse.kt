@@ -289,20 +289,29 @@ fun fromRoman(roman: String): Int {
  */
 
 fun checkIllegalArgumentException(countCells: Int, str: String) {
+    var firstBracket = ""
+    var lastBracket = ""
     var countLeftBrackets = 0
     var countRightBrackets = 0
     var countBordersSteps = countCells / 2
     for (element in str) {
+        if (element in "[]" && firstBracket == "") firstBracket = element.toString()
         var sign = element.toString()
         when (sign) {
             !in "+-><[] " -> throw IllegalArgumentException()
-            "[" -> countLeftBrackets++
-            "]" -> countRightBrackets++
+            "[" -> {
+                countLeftBrackets++
+                lastBracket = "["
+            }
+            "]" -> {
+                countRightBrackets++
+                lastBracket = "]"
+            }
             ">" -> countBordersSteps++
             "<" -> countBordersSteps--
         }
     }
-    if (countLeftBrackets != countRightBrackets) throw IllegalArgumentException()
+    if (firstBracket == "]" || lastBracket == "[" || (countLeftBrackets != countRightBrackets)) throw IllegalArgumentException()
 }
 fun checkIllegalStateException(totalCells: Int, currentsCell: Int, typeArrow: String) {
     if (typeArrow == "left" && currentsCell - 1 < 0) throw IllegalStateException()
