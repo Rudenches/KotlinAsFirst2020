@@ -570,15 +570,24 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         val writer = File(outputName).bufferedWriter()
         var flag = true
         if (lhv < rhv && lhv.toString().length == rhv.toString().length) {
-            flag = false
-            writer.write("$lhv | $rhv")
-            writer.newLine()
-            writer.write(" ".repeat(lhv.toString().length - 2).plus("-0"))
-            writer.write("   0")
-            writer.newLine()
-            writer.write("-".repeat(lhv.toString().length))
-            writer.newLine()
-            writer.write("$lhv")
+            if (lhv.toString().length == 1) {
+                writer.write(" $lhv | $rhv")
+                writer.newLine()
+                writer.write("-0".plus("   0"))
+                writer.newLine()
+                writer.write("--")
+                writer.newLine()
+                writer.write(" $lhv")
+            } else {
+                writer.write("$lhv | $rhv")
+                writer.newLine()
+                writer.write(" ".repeat(lhv.toString().length - 2).plus("-0"))
+                writer.write("   0")
+                writer.newLine()
+                writer.write("-".repeat(lhv.toString().length))
+                writer.newLine()
+                writer.write("$lhv")
+            }
             flag = false
         }
 
