@@ -563,7 +563,6 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    var flag = true
     if (lhv < rhv && lhv.toString().length < rhv.toString().length && lhv.toString().length != 1) {
         writer.write("$lhv | $rhv")
         writer.newLine()
@@ -601,9 +600,9 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     }
 
     fun remainder(subLhv: String, subtract: String, cycle: Int, index: Int): String {
-        var subLhvInt = subLhv.toInt()
-        var subtractInt = subtract.toInt() * 10.0.pow(cycle - 1 - index).toInt()
-        var result = subLhvInt - subtractInt
+        val subLhvInt = subLhv.toInt()
+        val subtractInt = subtract.toInt() * 10.0.pow(cycle - 1 - index).toInt()
+        val result = subLhvInt - subtractInt
         return if (index + 1 == cycle) result.toString()
         else {
             return if (result / 10.0.pow(cycle - 1 - index).toInt() == 0) {
@@ -615,24 +614,23 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     }
 
     fun updateSubLhv(subLhv: String, subtract: String, cycle: Int, index: Int): String {
-        var subLhvInt = subLhv.toInt()
-        var subtractInt = subtract.toInt() * 10.0.pow(cycle - 1 - index).toInt()
-        var result = subLhvInt - subtractInt
+        val subLhvInt = subLhv.toInt()
+        val subtractInt = subtract.toInt() * 10.0.pow(cycle - 1 - index).toInt()
+        val result = subLhvInt - subtractInt
         return result.toString()
     }
 
-    var tmpLhv = lhv
-    var subLhv = tmpLhv.toString()
+    var subLhv = lhv.toString()
     val result = lhv / rhv
     val splitResult = result.toString().split("").subList(1, result.toString().length + 1)
     val countCycles = result.toString().length
 
     val len = lhv.toString().length
-    var offsets = arrayListOf<Int>()
+    val offsets = arrayListOf<Int>()
     for (i in 0 until countCycles) {
         offsets.add(countCycles - i - 1)
     }
-    var offsetsForRemained = arrayListOf<Int>()
+    val offsetsForRemained = arrayListOf<Int>()
 
     for (i in 0 until countCycles) {
         offsetsForRemained.add(countCycles - i - 3)
@@ -643,8 +641,8 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     strings.add(" $lhv | $rhv")
     var lastRemained = ""
     for (i in 0 until countCycles) {
-        var subtract = splitResult[i].toInt() * rhv // то, что надо вычесть
-        var remained = remainder(subLhv, subtract.toString(), countCycles, i)
+        val subtract = splitResult[i].toInt() * rhv // то, что надо вычесть
+        val remained = remainder(subLhv, subtract.toString(), countCycles, i)
         subLhv = updateSubLhv(subLhv, subtract.toString(), countCycles, i)
         // ввод в файл
         if (i == 0) {
@@ -685,5 +683,5 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         writer.write(strings[i])
         writer.newLine()
     }
-writer.close()
+    writer.close()
 }
