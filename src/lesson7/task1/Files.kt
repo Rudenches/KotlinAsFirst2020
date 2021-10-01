@@ -564,6 +564,17 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var flag = true
+    if (lhv < rhv && lhv.toString().length < rhv.toString().length && lhv.toString().length != 1) {
+        writer.write("$lhv | $rhv")
+        writer.newLine()
+        writer.write(" ".repeat(lhv.toString().length - 2).plus("-0   0"))
+        writer.newLine()
+        writer.write("-".repeat(lhv.toString().length))
+        writer.newLine()
+        writer.write(lhv.toString())
+        writer.close()
+        return
+    }
     if (lhv < rhv && lhv.toString().length == rhv.toString().length) {
         if (lhv.toString().length == 1) {
             writer.write(" $lhv | $rhv")
@@ -573,6 +584,8 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             writer.write("--")
             writer.newLine()
             writer.write(" $lhv")
+            writer.close()
+            return
         } else {
             writer.write("$lhv | $rhv")
             writer.newLine()
@@ -582,8 +595,9 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             writer.write("-".repeat(lhv.toString().length))
             writer.newLine()
             writer.write("$lhv")
+            writer.close()
+            return
         }
-        flag = false
     }
 
     fun remainder(subLhv: String, subtract: String, cycle: Int, index: Int): String {
@@ -625,52 +639,51 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     }
     val lenT = 3 + lhv.toString().length
     val strings = arrayListOf<String>()
-    if (flag) {
-        strings.add(" $lhv | $rhv")
-        var lastRemained = ""
-        for (i in 0 until countCycles) {
-            var subtract = splitResult[i].toInt() * rhv // то, что надо вычесть
-            var remained = remainder(subLhv, subtract.toString(), countCycles, i)
-            subLhv = updateSubLhv(subLhv, subtract.toString(), countCycles, i)
-            // ввод в файл
-            if (i == 0) {
-                strings.add(
-                    " ".repeat(len - subtract.toString().length - offsets[i]).plus("-$subtract")
-                        .plus(" ".repeat(lenT - subtract.toString().length).plus(result))
-                )
-            }
-            strings.add(" ".repeat(len - subtract.toString().length - offsets[i]).plus("-$subtract"))
+
+    strings.add(" $lhv | $rhv")
+    var lastRemained = ""
+    for (i in 0 until countCycles) {
+        var subtract = splitResult[i].toInt() * rhv // то, что надо вычесть
+        var remained = remainder(subLhv, subtract.toString(), countCycles, i)
+        subLhv = updateSubLhv(subLhv, subtract.toString(), countCycles, i)
+        // ввод в файл
+        if (i == 0) {
             strings.add(
-                " ".repeat(len - max(subtract.toString().length, lastRemained.length - 1) - offsets[i])
-                    .plus("-".repeat(max(subtract.toString().length + 1, lastRemained.length)))
+                " ".repeat(len - subtract.toString().length - offsets[i]).plus("-$subtract")
+                    .plus(" ".repeat(lenT - subtract.toString().length).plus(result))
             )
-            if (i + 1 == countCycles) strings.add(
-                " ".repeat(len - remained.length - offsetsForRemained[i] - 1).plus(remained)
-            )
-            else strings.add(" ".repeat(len - remained.length - offsetsForRemained[i]).plus(remained))
-            lastRemained = remained
         }
-
-        var isFirstElem = true
-        strings.forEach {
-            if (it[0].toString() != " ") isFirstElem = false
-        }
-
-        if (isFirstElem) {
-            for (i in 1 until strings[1].length) {
-                if (strings[1][i].toString() == " ") {
-                    strings[1] = strings[1].removeRange(i, i + 1)
-                    break
-                }
-            }
-            for (i in 0 until strings.size) strings[i] = strings[i].substring(1)
-        }
-
-        for (i in 0 until strings.size) {
-            if (i == 2) continue
-            writer.write(strings[i])
-            writer.newLine()
-        }
+        strings.add(" ".repeat(len - subtract.toString().length - offsets[i]).plus("-$subtract"))
+        strings.add(
+            " ".repeat(len - max(subtract.toString().length, lastRemained.length - 1) - offsets[i])
+                .plus("-".repeat(max(subtract.toString().length + 1, lastRemained.length)))
+        )
+        if (i + 1 == countCycles) strings.add(
+            " ".repeat(len - remained.length - offsetsForRemained[i] - 1).plus(remained)
+        )
+        else strings.add(" ".repeat(len - remained.length - offsetsForRemained[i]).plus(remained))
+        lastRemained = remained
     }
-    writer.close()
+
+    var isFirstElem = true
+    strings.forEach {
+        if (it[0].toString() != " ") isFirstElem = false
+    }
+
+    if (isFirstElem) {
+        for (i in 1 until strings[1].length) {
+            if (strings[1][i].toString() == " ") {
+                strings[1] = strings[1].removeRange(i, i + 1)
+                break
+            }
+        }
+        for (i in 0 until strings.size) strings[i] = strings[i].substring(1)
+    }
+
+    for (i in 0 until strings.size) {
+        if (i == 2) continue
+        writer.write(strings[i])
+        writer.newLine()
+    }
+writer.close()
 }

@@ -526,6 +526,17 @@ Basic, Ruby, Swift.
               2
              """
         )
+        test(
+            1586,
+            12336,
+            """
+                1586 | 12336
+                  -0   0
+                ----
+                1586
+            """.trimIndent()
+
+        )
 
 
         File("temp.txt").delete()
