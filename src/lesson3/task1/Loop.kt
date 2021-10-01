@@ -2,7 +2,6 @@
 
 package lesson3.task1
 
-import lesson1.task1.main
 import kotlin.math.sqrt
 
 // Урок 3: циклы
@@ -195,8 +194,7 @@ fun cos(x: Double, eps: Double): Double = TODO()
  */
 
 
-// да, тут я просто забыл переименовать метод 'a' :(
-fun divideNumber(item: Int): ArrayList<Int> {
+fun divideNumber(item: Int): List<Int> {
     var number = item
     val numberList = arrayListOf<Int>()
     while (number > 0) {

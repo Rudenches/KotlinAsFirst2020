@@ -1,4 +1,5 @@
 @file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
+
 package lesson6.task1
 
 import java.lang.IllegalArgumentException
@@ -153,7 +154,7 @@ fun plusMinus(expression: String): Int = TODO()
  */
 fun firstDuplicateIndex(str: String): Int {
     var countIndexes = 0
-    var listWords = str.split(" ")
+    val listWords = str.split(" ")
     for (i in 0..listWords.size - 2) {
         countIndexes += listWords[i].length
         if (listWords[i].equals(listWords[i + 1], ignoreCase = true)) {
@@ -178,11 +179,11 @@ fun firstDuplicateIndex(str: String): Int {
 fun mostExpensive(description: String): String {
     if (description.isEmpty()) return ""
     var maxPrice = 0.0
-    var products = mutableMapOf<Double, String>()
-    var items = description.split(";").toMutableList()
+    val products = mutableMapOf<Double, String>()
+    val items = description.split(";").toMutableList()
     for (i in items.indices) {
         if (items[i][0].toString() == " ") items[i] = items[i].substring(1)
-        var listPriceItem = items[i].split(" ")
+        val listPriceItem = items[i].split(" ")
         if (listPriceItem.size != 2) return ""
         if (listPriceItem[1].toDouble() < 0) return ""
         products[listPriceItem[1].toDouble()] = listPriceItem[0]
@@ -202,53 +203,44 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-var map = mapOf(
+var numbersRoman = mapOf(
     "M" to 1000, "CM" to 900, "D" to 500, "CD" to 400, "C" to 100, "XC" to 90,
     "L" to 50, "XL" to 40, "X" to 10, "IX" to 9, "V" to 5, "IV" to 4, "I" to 1
 )
-fun isCorrectInput(str: String): Boolean {
-    if (str.isEmpty()) return false
-    for (element in str) if (element !in "MCDXLIV") return false
 
-    var maxNumber = 5000
-    var i = 0
-    while (i < str.length) {
-        var substring = str[i].toString()
-        if (str.length - i > 1) substring = substring.plus(str[i + 1])
-        if (map.containsKey(substring)) {
-            if (map.getValue(substring) <= maxNumber) {
-                maxNumber = map.getValue(substring)
-                i += 2
-            } else return false
-        } else if (map.getValue(str[i].toString()) <= maxNumber) {
-            maxNumber = map.getValue(str[i].toString())
-            i++
-        } else return false
-    }
-    return true
-}
 fun fromRoman(roman: String): Int {
     var result = 0
-    if (isCorrectInput(roman)) {
-        var i = 0
-        while (i < roman.length) {
-            if (i == roman.length - 1) {
-                result += map.getValue(roman[i].toString())
-                i++
+    var maxNumber = 5000
+    if (roman.isEmpty()) return -1
+    var i = 0
+    while (i < roman.length) {
+        if (roman[i] !in "MCDXLIV") return -1
+
+        var substring = roman[i].toString()
+        if (roman.length - i > 1) substring = substring.plus(roman[i + 1])
+        maxNumber = if (numbersRoman.containsKey(substring)) {
+            if (numbersRoman.getValue(substring) <= maxNumber) {
+                numbersRoman.getValue(substring)
+            } else return -1
+        } else if (numbersRoman.getValue(roman[i].toString()) <= maxNumber) {
+            numbersRoman.getValue(roman[i].toString())
+        } else return -1
+
+        if (i == roman.length - 1) {
+            result += numbersRoman.getValue(roman[i].toString())
+            i++
+        } else {
+            val substring = roman[i].plus(roman[i + 1].toString())
+            if (numbersRoman.containsKey(substring)) {
+                result += numbersRoman.getValue(substring)
+                i += 2
             } else {
-                var substring = roman[i].plus(roman[i + 1].toString())
-                if (map.containsKey(substring)) {
-                    result += map.getValue(substring)
-                    i += 2
-                } else {
-                    result += map.getValue(roman[i].toString())
-                    i++
-                }
+                result += numbersRoman.getValue(roman[i].toString())
+                i++
             }
         }
-        return result
     }
-    return -1
+    return result
 }
 
 /**
@@ -287,71 +279,74 @@ fun fromRoman(roman: String): Int {
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-
-fun checkIllegalArgumentException(countCells: Int, str: String) {
-    var firstBracket = ""
-    var lastBracket = ""
-    var countLeftBrackets = 0
-    var countRightBrackets = 0
-    var countBordersSteps = countCells / 2
-    for (element in str) {
-        if (element in "[]" && firstBracket == "") firstBracket = element.toString()
-        var sign = element.toString()
-        when (sign) {
-            !in "+-><[] " -> throw IllegalArgumentException()
-            "[" -> {
-                countLeftBrackets++
-                lastBracket = "["
-            }
-            "]" -> {
-                countRightBrackets++
-                lastBracket = "]"
-            }
-            ">" -> countBordersSteps++
-            "<" -> countBordersSteps--
-        }
-    }
-    if (firstBracket == "]" || lastBracket == "[" || (countLeftBrackets != countRightBrackets)) throw IllegalArgumentException()
-}
-fun checkIllegalStateException(totalCells: Int, currentsCell: Int, typeArrow: String) {
-    if (typeArrow == "left" && currentsCell - 1 < 0) throw IllegalStateException()
-    if (typeArrow == "right" && currentsCell + 1 >= totalCells) throw IllegalStateException()
-}
-fun editLeftBracket(index: Int, commands: String): Int {
-    var nesting = 0
-    var returnedIndex = 0
-    for (i in index + 1 until commands.length) {
-        if (commands[i].toString() == "[") nesting--
-        if (commands[i].toString() == "]" && nesting == 0) {
-            returnedIndex = i
-            break
-        }
-        if (commands[i].toString() == "]") nesting++
-    }
-    return returnedIndex
-}
-fun editRightBracket(index: Int, commands: String): Int {
-    var currentIndex = index
-    var nesting = 0
-    var returnedIndex = 0
-    while (true) {
-        currentIndex--
-        if (commands[currentIndex].toString() == "]") nesting--
-        else if (commands[currentIndex].toString() == "[" && nesting == 0) {
-            returnedIndex = currentIndex
-            break
-        } else if (commands[currentIndex].toString() == "[") nesting++
-    }
-    return returnedIndex
-}
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    fun checkIllegalArgumentException(countCells: Int, str: String) {
+        var firstBracket = ""
+        var lastBracket = ""
+        var countLeftBrackets = 0
+        var countRightBrackets = 0
+        var countBordersSteps = countCells / 2
+        for (element in str) {
+            if (element in "[]" && firstBracket == "") firstBracket = element.toString()
+            val sign = element.toString()
+            when (sign) {
+                !in "+-><[] " -> throw IllegalArgumentException()
+                "[" -> {
+                    countLeftBrackets++
+                    lastBracket = "["
+                }
+                "]" -> {
+                    countRightBrackets++
+                    lastBracket = "]"
+                }
+                ">" -> countBordersSteps++
+                "<" -> countBordersSteps--
+            }
+        }
+        if (firstBracket == "]" || lastBracket == "[" || (countLeftBrackets != countRightBrackets)) throw IllegalArgumentException()
+    }
+
+    fun checkIllegalStateException(totalCells: Int, currentsCell: Int, typeArrow: String) {
+        if (typeArrow == "left" && currentsCell - 1 < 0) throw IllegalStateException()
+        if (typeArrow == "right" && currentsCell + 1 >= totalCells) throw IllegalStateException()
+    }
+
+    fun editLeftBracket(index: Int, commands: String): Int {
+        var nesting = 0
+        var returnedIndex = 0
+        for (i in index + 1 until commands.length) {
+            if (commands[i].toString() == "[") nesting--
+            if (commands[i].toString() == "]" && nesting == 0) {
+                returnedIndex = i
+                break
+            }
+            if (commands[i].toString() == "]") nesting++
+        }
+        return returnedIndex
+    }
+
+    fun editRightBracket(index: Int, commands: String): Int {
+        var currentIndex = index
+        var nesting = 0
+        var returnedIndex = 0
+        while (true) {
+            currentIndex--
+            if (commands[currentIndex].toString() == "]") nesting--
+            else if (commands[currentIndex].toString() == "[" && nesting == 0) {
+                returnedIndex = currentIndex
+                break
+            } else if (commands[currentIndex].toString() == "[") nesting++
+        }
+        return returnedIndex
+    }
+
     checkIllegalArgumentException(cells, commands)
-    var cellArray = IntArray(cells) { 0 }
+    val cellArray = IntArray(cells) { 0 }
     var currentCell = cells / 2
     var step = 0
     var countSteps = 0
     while (step < commands.length && countSteps < limit) {
-        var command = commands[step].toString()
+        val command = commands[step].toString()
         if (command == ">") {
             checkIllegalStateException(cells, currentCell, "right")
             currentCell++

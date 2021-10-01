@@ -131,19 +131,16 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-// не забыть фиксануть эту штуку, что нужно исправить, есть в котоеде
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     val cos1: Double = (a * a + b * b - c * c) / (2 * a * b) // вывод из теоремы косинусов c^2 = a^2 + b^2 - 2ab*cos(a)
     val cos2: Double = (c * c + b * b - a * a) / (2 * c * b)
     val cos3: Double = (c * c + a * a - b * b) / (2 * c * a)
-    return if (cos1 > 0 && cos1 < 1 && cos2 > 0 && cos2 < 1 && cos3 > 0 && cos3 < 1) {
-        0
-    } else if (cos1 > 1 || cos1 < -1 || cos2 > 1 || cos2 < -1 || cos3 > 1 || cos3 < -1) {
-        -1
-    } else if ((cos1 < 0 && cos1 > -1) || (cos2 > -1 && cos2 < 0) || (cos3 > -1 && cos3 < 0)) {
-        2
-    } else
-        1
+    return when {
+        cos1 > 0 && cos1 < 1 && cos2 > 0 && cos2 < 1 && cos3 > 0 && cos3 < 1 -> 0
+        cos1 > 1 || cos1 < -1 || cos2 > 1 || cos2 <-1 || cos3 > 1 || cos3 < -1 -> -1
+        (cos1 < 0 && cos1 > -1) || (cos2 > -1 && cos2 < 0) || (cos3 > -1 && cos3 < 0) -> 2
+        else -> 1
+    }
 }
 
 /**
@@ -155,13 +152,11 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    return if (a >= c && b <= d) {
-        b - a
-    } else if (c in a..b && b <= d) {
-        b - c
-    } else if (a in c..d && b >= d) {
-        d - a
-    } else if (c >= a && d <= b) {
-        d - c
-    } else -1
+    return when {
+        a >= c && b <= d -> b - a
+        c in a..b && b <= d -> b - c
+        a in c..d && b >= d -> d - a
+        c >= a && d <= b -> d - c
+        else -> -1
+    }
 }
