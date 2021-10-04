@@ -563,6 +563,8 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val writer = File(outputName).bufferedWriter()
+
+    // 3 частных случая, их отдельно обрабатываю
     if (lhv < rhv && lhv.toString().length < rhv.toString().length && lhv.toString().length != 1) {
         writer.write("$lhv | $rhv")
         writer.newLine()
@@ -640,11 +642,12 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
 
     strings.add(" $lhv | $rhv")
     var lastRemained = ""
+
+    // запись построчных вычислений в список
     for (i in 0 until countCycles) {
         val subtract = splitResult[i].toInt() * rhv // то, что надо вычесть
         val remained = remainder(subLhv, subtract.toString(), countCycles, i)
         subLhv = updateSubLhv(subLhv, subtract.toString(), countCycles, i)
-        // ввод в файл
         if (i == 0) {
             strings.add(
                 " ".repeat(len - subtract.toString().length - offsets[i]).plus("-$subtract")
@@ -663,6 +666,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         lastRemained = remained
     }
 
+    // убираем отступ " " в начале каждой строки, если это возможно
     var isFirstElem = true
     strings.forEach {
         if (it[0].toString() != " ") isFirstElem = false
@@ -678,6 +682,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         for (i in 0 until strings.size) strings[i] = strings[i].substring(1)
     }
 
+    // выводим, если не прошли частные случаи
     for (i in 0 until strings.size) {
         if (i == 2) continue
         writer.write(strings[i])
