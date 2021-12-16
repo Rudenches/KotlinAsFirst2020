@@ -277,7 +277,7 @@ fun roman(n: Int): String {
         number /= 10
     }
 
-    for (i in 0..(3 - numberList.size)) {
+    for (i in 0 until (4 - numberList.size)) {
         numberList.add(0)
     }
     numberList.reverse()

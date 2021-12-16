@@ -2,6 +2,8 @@
 
 package lesson1.task1
 
+import lesson4.task1.squares
+import java.lang.IllegalArgumentException
 import kotlin.math.*
 
 // Урок 1: простые функции
@@ -111,6 +113,7 @@ fun thirdDigit(number: Int): Int = TODO()
  */
 fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int =
     hoursArrive * 60 + minutesArrive - hoursDepart * 60 - minutesDepart
+
 /**
  * Простая (2 балла)
  *
@@ -123,7 +126,38 @@ fun accountInThreeYears(initial: Int, percent: Int): Double {
     return initial * multiplier.pow(3)
 }
 
+/**
+ * Ответ: 140, listOf("Даниил+два", "Катя+десять"), cost: 10
+ * Ответ: 375, listOf("Даниил+два", "Катя+десять", "Вася+пять", "гена+четыре"), cost: 15
+ * Ответ: 140, myFun(listOf("Дан иил+два", "Ка тя+десять"), cost: 10
+ * Ответ: IllegalArgumentException::class.java), listOf("+"), cost: 3
+ * Ответ: IllegalArgumentException::class.java), istOf("sadasd+десять", "ыфвфывфыв+'2"), cost: 3
+ */
+fun myFun(marks: List<String>, cost: Int): Int {
 
+    val numbers = listOf("ноль", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять", "десять")
+    var result = 0
+
+    marks.forEach {
+        val parsedPerson = it.split("+");
+        if (parsedPerson.size != 2) {
+            throw IllegalArgumentException();
+        }
+        val number = parsedPerson[1];
+        var numberInt = -1;
+        for (j in numbers.indices) {
+            if (number == numbers[j]) {
+                numberInt = j
+            }
+        }
+        if (numberInt < 0) {
+            throw IllegalArgumentException();
+        }
+        result += numberInt;
+    }
+    result += marks.size;
+    return result * cost;
+}
 
 
 /**
