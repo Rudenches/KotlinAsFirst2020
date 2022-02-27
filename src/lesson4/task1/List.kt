@@ -231,7 +231,22 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun pow(number: Int, power: Int): Int {
+    if (power == 0) return 1
+    var result = 1
+    for (i in 1..power) result *= number
+    return result
+}
+fun decimalFromString(str: String, base: Int): Int {
+    val asciiCodes = "0123456789abcdefghijklmnopqrstuvwxyz"
+    var number = 0
+    for (i in str.indices) {
+        for (j in asciiCodes.indices) {
+            number += if (str[i] == asciiCodes[j]) j * pow(base, str.length - i - 1) else 0
+        }
+    }
+    return number
+}
 
 /**
  * Сложная (5 баллов)
@@ -241,7 +256,38 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+
+fun roman(n: Int): String {
+    // * 1
+    val romanNumbersFor0 = listOf("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX")
+    // * 10
+    val romanNumbersFor1 = listOf("X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC")
+    // * 100
+    val romanNumbersFor2 = listOf("C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM")
+    // * 1000
+    val romanNumbersFor3 = listOf("M", "MM", "MMM")
+
+    val arrayCategoryNumbers = arrayOf(romanNumbersFor3, romanNumbersFor2, romanNumbersFor1, romanNumbersFor0)
+    var number = n
+    var result = ""
+
+    val numberList = arrayListOf<Int>()
+    while (number > 0) {
+        numberList.add(number % 10)
+        number /= 10
+    }
+
+    for (i in 0 until (4 - numberList.size)) {
+        numberList.add(0)
+    }
+    numberList.reverse()
+    for (i in 0..3) {
+        if (numberList[i] > 0) {
+            result += arrayCategoryNumbers[i][numberList[i] - 1]
+        }
+    }
+    return result
+}
 
 /**
  * Очень сложная (7 баллов)
@@ -250,4 +296,90 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val map = mapOf(
+        900 to "девятьсот",
+        800 to "восемьсот",
+        700 to "семьсот",
+        600 to "шестьсот",
+        500 to "пятьсот",
+        400 to "четыреста",
+        300 to "триста",
+        200 to "двести",
+        100 to "сто",
+        90 to "девяносто",
+        80 to "восемьдесят",
+        70 to "семьдесят",
+        60 to "шестьдесят",
+        50 to "пятьдесят",
+        40 to "сорок",
+        30 to "тридцать",
+        20 to "двадцать",
+        19 to "девятнадцать",
+        18 to "восемнадцать",
+        17 to "семнадцать",
+        16 to "шестнадцать",
+        15 to "пятнадцать",
+        14 to "четырнадцать",
+        13 to "тринадцать",
+        12 to "двенадцать",
+        11 to "одиннадцать",
+        10 to "десять",
+        9 to "девять",
+        8 to "восемь",
+        7 to "семь",
+        6 to "шесть",
+        5 to "пять",
+        4 to "четыре",
+        3 to "три",
+        2 to "два",
+        1 to "один"
+    )
+    var numberTopString = ""
+    var numberBottomString = ""
+    var suffix = "тысяч"
+    var numberTop = n / 1000
+    var numberBottom = n % 1000
+
+    while (numberTop > 0) {
+        for ((key, value) in map) {
+            if (numberTop / key > 0) {
+                when (key) {
+                    1 -> {
+                        numberTopString += "одна "
+                        suffix = "тысяча"
+                    }
+                    in 2..4 -> {
+                        if (key == 2) numberTopString += "две "
+                        if (key == 3) numberTopString += "три "
+                        if (key == 4) numberTopString += "четыре "
+                        suffix = "тысячи"
+                    }
+                    else -> {
+                        numberTopString += "$value "
+                    }
+                }
+                numberTop -= key
+            }
+        }
+    }
+
+    while (numberBottom > 0) {
+        for ((key, value) in map) {
+            if (numberBottom / key > 0) {
+                numberBottomString += "$value "
+                numberBottom -= key
+            }
+        }
+    }
+
+    if (numberTopString.isNotEmpty()) {
+        numberTopString += "$suffix "
+    }
+    if (numberBottomString.isNotEmpty()) {
+        numberBottomString = numberBottomString.substring(0, numberBottomString.length - 1)
+    } else {
+        numberTopString = numberTopString.substring(0, numberTopString.length - 1)
+    }
+    return numberTopString + numberBottomString
+}

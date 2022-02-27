@@ -2,7 +2,10 @@
 
 package lesson7.task1
 
+import java.io.BufferedWriter
 import java.io.File
+import java.lang.Integer.max
+import kotlin.math.pow
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -63,7 +66,15 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
-    TODO()
+    val inputFile = File(inputName)
+    val writeToOutputFile = File(outputName).bufferedWriter()
+    inputFile.forEachLine {
+        if (it.isEmpty() || (it.isNotEmpty() && it[0].toString() != "_")) {
+            writeToOutputFile.write(it)
+            writeToOutputFile.newLine()
+        }
+    }
+    writeToOutputFile.close()
 }
 
 /**
@@ -75,8 +86,37 @@ fun deleteMarked(inputName: String, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    fun count(mainString: String, sub: String): Int {
+        var count = 0
+        var i = -1
+        while (i < mainString.length) {
+            var indexI = ++i
+            var indexJ = 0
+            while (indexJ < sub.length && indexI < mainString.length) {
+                if (mainString[indexI] == sub[indexJ]) {
+                    indexI++
+                    indexJ++
+                    if (indexJ == sub.length) {
+                        count++
+                        break
+                    }
+                } else break
+            }
+        }
+        return count
+    }
 
+    val substringsMap = mutableMapOf<String, Int>()
+    substrings.forEach { substringsMap[it] = 0 }
+    val inputFile = File(inputName)
+    inputFile.forEachLine {
+        for ((key, value) in substringsMap) {
+            substringsMap[key] = value + count(it.toLowerCase(), key.toLowerCase())
+        }
+    }
+    return substringsMap
+}
 
 /**
  * Средняя (12 баллов)
@@ -173,7 +213,6 @@ fun top20Words(inputName: String): Map<String, Int> = TODO()
  * Средняя (14 баллов)
  *
  * Реализовать транслитерацию текста из входного файла в выходной файл посредством динамически задаваемых правил.
-
  * Во входном файле с именем inputName содержится некоторый текст (в том числе, и на русском языке).
  *
  * В ассоциативном массиве dictionary содержится словарь, в котором некоторым символам
@@ -226,7 +265,6 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Остроумный
  * БелогЛазый
  * ФиолетОвый
-
  * Соответствующий выходной файл:
  * Карминовый, Некрасивый
  *
@@ -263,20 +301,19 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
  * Пример входного файла:
 Lorem ipsum *dolor sit amet*, consectetur **adipiscing** elit.
 Vestibulum lobortis, ~~Est vehicula rutrum *suscipit*~~, ipsum ~~lib~~ero *placerat **tortor***,
-
 Suspendisse ~~et elit in enim tempus iaculis~~.
  *
  * Соответствующий выходной файл:
 <html>
-    <body>
-        <p>
-            Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
-            Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
-        </p>
-        <p>
-            Suspendisse <s>et elit in enim tempus iaculis</s>.
-        </p>
-    </body>
+<body>
+<p>
+Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
+Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
+</p>
+<p>
+Suspendisse <s>et elit in enim tempus iaculis</s>.
+</p>
+</body>
 </html>
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
@@ -319,71 +356,148 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  *
  * Пример входного файла:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
-* Утка по-пекински
-    * Утка
-    * Соус
-* Салат Оливье
-    1. Мясо
-        * Или колбаса
-    2. Майонез
-    3. Картофель
-    4. Что-то там ещё
-* Помидоры
-* Фрукты
-    1. Бананы
-    23. Яблоки
-        1. Красные
-        2. Зелёные
+ * Утка по-пекински
+ * Утка
+ * Соус
+ * Салат Оливье
+1. Мясо
+ * Или колбаса
+2. Майонез
+3. Картофель
+4. Что-то там ещё
+ * Помидоры
+ * Фрукты
+1. Бананы
+23. Яблоки
+1. Красные
+2. Зелёные
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  *
  *
  * Соответствующий выходной файл:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
 <html>
-  <body>
-    <p>
-      <ul>
-        <li>
-          Утка по-пекински
-          <ul>
-            <li>Утка</li>
-            <li>Соус</li>
-          </ul>
-        </li>
-        <li>
-          Салат Оливье
-          <ol>
-            <li>Мясо
-              <ul>
-                <li>Или колбаса</li>
-              </ul>
-            </li>
-            <li>Майонез</li>
-            <li>Картофель</li>
-            <li>Что-то там ещё</li>
-          </ol>
-        </li>
-        <li>Помидоры</li>
-        <li>Фрукты
-          <ol>
-            <li>Бананы</li>
-            <li>Яблоки
-              <ol>
-                <li>Красные</li>
-                <li>Зелёные</li>
-              </ol>
-            </li>
-          </ol>
-        </li>
-      </ul>
-    </p>
-  </body>
+<body>
+<p>
+<ul>
+<li>
+Утка по-пекински
+<ul>
+<li>Утка</li>
+<li>Соус</li>
+</ul>
+</li>
+<li>
+Салат Оливье
+<ol>
+<li>Мясо
+<ul>
+<li>Или колбаса</li>
+</ul>
+</li>
+<li>Майонез</li>
+<li>Картофель</li>
+<li>Что-то там ещё</li>
+</ol>
+</li>
+<li>Помидоры</li>
+<li>Фрукты
+<ol>
+<li>Бананы</li>
+<li>Яблоки
+<ol>
+<li>Красные</li>
+<li>Зелёные</li>
+</ol>
+</li>
+</ol>
+</li>
+</ul>
+</p>
+</body>
 </html>
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlLists(inputName: String, outputName: String) {
-    TODO()
+    val inputFile = File(inputName)
+    val writer = File(outputName).bufferedWriter()
+    var oldDepth = -1
+    fun openingFile(writer: BufferedWriter) {
+        writer.write("<html>")
+        writer.newLine()
+        writer.write("<body>")
+        writer.newLine()
+        writer.write("<p>")
+    }
+
+    fun closingFile(writer: BufferedWriter) {
+        writer.newLine()
+        writer.write("</p>")
+        writer.newLine()
+        writer.write("</body>")
+        writer.newLine()
+        writer.write("</html>")
+    }
+
+    fun parseIt(str: String): String {
+        var result = ""
+        for (i in str.indices) {
+            if (str[i] !in "1234567890*. ") {
+                result = str.substring(i)
+                break
+            }
+        }
+        return result
+    }
+
+    val closedTagsMap = mutableMapOf<Int, String>()
+
+    openingFile(writer)
+    //
+    inputFile.forEachLine {
+        val text = parseIt(it)
+        val itWithoutTabs = it.replace("    ", "")
+        val firstSign = itWithoutTabs[0].toString()
+        val countTabs = (it.length - itWithoutTabs.length) / 4
+        when {
+            countTabs > oldDepth -> {
+                if (firstSign == "*") {
+                    writer.write("<ul>")
+                    closedTagsMap[oldDepth] = "</ul>"
+                }
+                if (firstSign in "1234567890") {
+                    writer.write("<ol>")
+                    closedTagsMap[oldDepth] = "</ol>"
+                }
+            }
+            countTabs == oldDepth -> {
+                writer.write("</li>")
+            }
+            countTabs < oldDepth -> {
+                writer.write("</li>")
+                writer.newLine()
+                writer.write(closedTagsMap[countTabs])
+                writer.newLine()
+                writer.write("</li>")
+            }
+        }
+        writer.newLine()
+        writer.write("<li>")
+        writer.newLine()
+        writer.write(text)
+        oldDepth = countTabs
+    }
+    for ((key, value) in closedTagsMap.toSortedMap(reverseOrder())) {
+        if (key < oldDepth) {
+            writer.newLine()
+            writer.write("</li>")
+            writer.newLine()
+            writer.write(value)
+        }
+    }
+    closingFile(writer)
+    writer.close()
 }
 
 /**
@@ -404,23 +518,23 @@ fun markdownToHtml(inputName: String, outputName: String) {
  * Вывести в выходной файл процесс умножения столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 111):
-   19935
-*    111
+19935
+ *   111
 --------
-   19935
+19935
 + 19935
 +19935
 --------
- 2212785
+2212785
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  * Нули в множителе обрабатывать так же, как и остальные цифры:
-  235
-*  10
+235
+ *  10
 -----
-    0
+0
 +235
 -----
- 2350
+2350
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
@@ -434,21 +548,145 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  * Вывести в выходной файл процесс деления столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 22):
-  19935 | 22
- -198     906
- ----
-    13
-    -0
-    --
-    135
-   -132
-   ----
-      3
-
+19935 | 22
+-198     906
+----
+13
+-0
+--
+135
+-132
+----
+3
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
-}
+    val writer = File(outputName).bufferedWriter()
 
+    // 3 частных случая, их отдельно обрабатываю
+    if (lhv < rhv && lhv.toString().length < rhv.toString().length && lhv.toString().length != 1) {
+        writer.write("$lhv | $rhv")
+        writer.newLine()
+        writer.write(" ".repeat(lhv.toString().length - 2).plus("-0   0"))
+        writer.newLine()
+        writer.write("-".repeat(lhv.toString().length))
+        writer.newLine()
+        writer.write(lhv.toString())
+        writer.close()
+        return
+    }
+    if (lhv < rhv && lhv.toString().length == rhv.toString().length) {
+        if (lhv.toString().length == 1) {
+            writer.write(" $lhv | $rhv")
+            writer.newLine()
+            writer.write("-0".plus("   0"))
+            writer.newLine()
+            writer.write("--")
+            writer.newLine()
+            writer.write(" $lhv")
+            writer.close()
+            return
+        } else {
+            writer.write("$lhv | $rhv")
+            writer.newLine()
+            writer.write(" ".repeat(lhv.toString().length - 2).plus("-0"))
+            writer.write("   0")
+            writer.newLine()
+            writer.write("-".repeat(lhv.toString().length))
+            writer.newLine()
+            writer.write("$lhv")
+            writer.close()
+            return
+        }
+    }
+
+    fun remainder(subLhv: String, subtract: String, cycle: Int, index: Int): String {
+        val subLhvInt = subLhv.toInt()
+        val subtractInt = subtract.toInt() * 10.0.pow(cycle - 1 - index).toInt()
+        val result = subLhvInt - subtractInt
+        return if (index + 1 == cycle) result.toString()
+        else {
+            return if (result / 10.0.pow(cycle - 1 - index).toInt() == 0) {
+                "0".plus(result / 10.0.pow(cycle - 2 - index).toInt())
+            } else {
+                (result / 10.0.pow(cycle - 2 - index).toInt()).toString()
+            }
+        }
+    }
+
+    fun updateSubLhv(subLhv: String, subtract: String, cycle: Int, index: Int): String {
+        val subLhvInt = subLhv.toInt()
+        val subtractInt = subtract.toInt() * 10.0.pow(cycle - 1 - index).toInt()
+        val result = subLhvInt - subtractInt
+        return result.toString()
+    }
+
+    var subLhv = lhv.toString()
+    val result = lhv / rhv
+    val splitResult = result.toString().split("").subList(1, result.toString().length + 1)
+    val countCycles = result.toString().length
+
+    val len = lhv.toString().length
+    val offsets = arrayListOf<Int>()
+    for (i in 0 until countCycles) {
+        offsets.add(countCycles - i - 1)
+    }
+    val offsetsForRemained = arrayListOf<Int>()
+
+    for (i in 0 until countCycles) {
+        offsetsForRemained.add(countCycles - i - 3)
+    }
+    val lenT = 3 + lhv.toString().length
+    val strings = arrayListOf<String>()
+
+    strings.add(" $lhv | $rhv")
+    var lastRemained = ""
+
+    // запись построчных вычислений в список
+    for (i in 0 until countCycles) {
+        val subtract = splitResult[i].toInt() * rhv // то, что надо вычесть
+        val remained = remainder(subLhv, subtract.toString(), countCycles, i)
+        subLhv = updateSubLhv(subLhv, subtract.toString(), countCycles, i)
+        if (i == 0) {
+            strings.add(
+                " ".repeat(len - subtract.toString().length - offsets[i]).plus("-$subtract")
+                    .plus(" ".repeat(lenT - subtract.toString().length).plus(result))
+            )
+        }
+        strings.add(" ".repeat(len - subtract.toString().length - offsets[i]).plus("-$subtract"))
+        strings.add(
+            " ".repeat(len - max(subtract.toString().length, lastRemained.length - 1) - offsets[i])
+                .plus("-".repeat(max(subtract.toString().length + 1, lastRemained.length)))
+        )
+        if (i + 1 == countCycles) strings.add(
+            " ".repeat(len - remained.length - offsetsForRemained[i] - 1).plus(remained)
+        )
+        else strings.add(" ".repeat(len - remained.length - offsetsForRemained[i]).plus(remained))
+        lastRemained = remained
+    }
+
+    // убираем отступ " " в начале каждой строки, если это возможно
+    var isFirstElem = true
+    strings.forEach {
+        if (it[0].toString() != " ") isFirstElem = false
+    }
+
+    if (isFirstElem) {
+        for (i in 1 until strings[1].length) {
+            if (strings[1][i].toString() == " ") {
+                strings[1] = strings[1].removeRange(i, i + 1)
+                break
+            }
+        }
+        for (i in 0 until strings.size) strings[i] = strings[i].substring(1)
+    }
+
+    // выводим, если не прошли частные случаи
+    for (i in 0 until strings.size) {
+        if (i == 2) continue
+        writer.write(strings[i])
+        writer.newLine()
+    }
+    writer.close()
+}

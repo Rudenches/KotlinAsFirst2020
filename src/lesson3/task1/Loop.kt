@@ -192,7 +192,27 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+
+
+fun divideNumber(item: Int): List<Int> {
+    var number = item
+    val numberList = arrayListOf<Int>()
+    while (number > 0) {
+        numberList.add(number % 10)
+        number /= 10
+    }
+    numberList.reverse()
+    return numberList
+}
+
+
+fun squareSequenceDigit(n: Int): Int {
+    val allNumbers = arrayListOf<Int>()
+    for (i in 1..n) {
+        divideNumber(i * i).forEach { allNumbers.add(it) }
+    }
+    return allNumbers[n - 1]
+}
 
 /**
  * Сложная (5 баллов)
@@ -203,4 +223,18 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    val primaryList = arrayListOf<Int>()
+    val resultList = arrayListOf<Int>()
+    primaryList.add(1)
+    primaryList.add(1)
+
+    for (i in 2..n) {
+        primaryList.add(i, primaryList[i - 1] + primaryList[i - 2])
+    }
+
+    for (i in 0..n) {
+        divideNumber(primaryList[i]).forEach { resultList.add(it) }
+    }
+    return resultList[n - 1]
+}

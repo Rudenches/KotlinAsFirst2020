@@ -3,6 +3,7 @@
 package lesson2.task2
 
 import lesson1.task1.sqr
+import kotlin.math.*
 
 /**
  * Пример
@@ -45,10 +46,14 @@ fun daysInMonth(month: Int, year: Int): Int = TODO()
  * окружности с центром в (x2, y2) и радиусом r2.
  * Вернуть true, если утверждение верно
  */
+// нам нужно чтобы радиус(r2) был больше или равен, чем сумма радиуса(r1) + расстояния от {x2, y2} до {x1, y2}
 fun circleInside(
     x1: Double, y1: Double, r1: Double,
     x2: Double, y2: Double, r2: Double
-): Boolean = TODO()
+): Boolean {
+    val accessLen = r2 - r1
+    return (accessLen >= sqrt(abs(x2 - x1).pow(2) + abs(y2 - y1).pow(2)))
+}
 
 /**
  * Средняя (3 балла)
@@ -59,4 +64,12 @@ fun circleInside(
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
-fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean = TODO()
+fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
+    val numbers: Array<Int> = arrayOf(a, b, c)
+    numbers.sort()
+
+    if ((numbers[0] <= r && numbers[1] <= s) || (numbers[0] <= s && numbers[1] <= r)) {
+        return true
+    }
+    return false
+}

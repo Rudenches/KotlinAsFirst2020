@@ -3,8 +3,7 @@
 package lesson2.task1
 
 import lesson1.task1.discriminant
-import kotlin.math.max
-import kotlin.math.sqrt
+import kotlin.math.*
 
 // Урок 2: ветвления (здесь), логический тип (см. 2.2).
 // Максимальное количество баллов = 6
@@ -112,7 +111,17 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int = TODO()
+): Int {
+    var attackRook = 0
+    var attackBishop = 0
+    if (rookX == kingX || rookY == kingY) {
+        attackRook = 1
+    }
+    if (abs(bishopY - kingY) == abs(bishopX - kingX)) {
+        attackBishop = 2
+    }
+    return attackBishop + attackRook
+}
 
 /**
  * Простая (2 балла)
@@ -122,7 +131,17 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    val cos1: Double = (a * a + b * b - c * c) / (2 * a * b) // вывод из теоремы косинусов c^2 = a^2 + b^2 - 2ab*cos(a)
+    val cos2: Double = (c * c + b * b - a * a) / (2 * c * b)
+    val cos3: Double = (c * c + a * a - b * b) / (2 * c * a)
+    return when {
+        cos1 > 0 && cos1 < 1 && cos2 > 0 && cos2 < 1 && cos3 > 0 && cos3 < 1 -> 0
+        cos1 > 1 || cos1 < -1 || cos2 > 1 || cos2 <-1 || cos3 > 1 || cos3 < -1 -> -1
+        (cos1 < 0 && cos1 > -1) || (cos2 > -1 && cos2 < 0) || (cos3 > -1 && cos3 < 0) -> 2
+        else -> 1
+    }
+}
 
 /**
  * Средняя (3 балла)
@@ -132,4 +151,12 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
+    return when {
+        a >= c && b <= d -> b - a
+        c in a..b && b <= d -> b - c
+        a in c..d && b >= d -> d - a
+        c >= a && d <= b -> d - c
+        else -> -1
+    }
+}

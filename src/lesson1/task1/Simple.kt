@@ -2,6 +2,8 @@
 
 package lesson1.task1
 
+import lesson4.task1.squares
+import java.lang.IllegalArgumentException
 import kotlin.math.*
 
 // Урок 1: простые функции
@@ -65,7 +67,9 @@ fun main() {
  * Пользователь задает время в часах, минутах и секундах, например, 8:20:35.
  * Рассчитать время в секундах, прошедшее с начала суток (30035 в данном случае).
  */
-fun seconds(hours: Int, minutes: Int, seconds: Int): Int = hours * 36
+
+fun seconds(hours: Int, minutes: Int, seconds: Int) =
+    hours * 60 * 60 + minutes * 60 + seconds
 
 /**
  * Тривиальная (1 балл)
@@ -107,7 +111,8 @@ fun thirdDigit(number: Int): Int = TODO()
  * прибыл на станцию назначения в h2 часов m2 минут того же дня (например в 13:01).
  * Определите время поезда в пути в минутах (в данном случае 216).
  */
-fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int = TODO()
+fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int =
+    hoursArrive * 60 + minutesArrive - hoursDepart * 60 - minutesDepart
 
 /**
  * Простая (2 балла)
@@ -116,7 +121,44 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
  * Сколько денег будет на счету через 3 года (с учётом сложных процентов)?
  * Например, 100 рублей под 10% годовых превратятся в 133.1 рубля
  */
-fun accountInThreeYears(initial: Int, percent: Int): Double = TODO()
+fun accountInThreeYears(initial: Int, percent: Int): Double {
+    val multiplier = (1 + percent.toDouble() / 100)
+    return initial * multiplier.pow(3)
+}
+
+/**
+ * Ответ: 140, listOf("Даниил+два", "Катя+десять"), cost: 10
+ * Ответ: 375, listOf("Даниил+два", "Катя+десять", "Вася+пять", "гена+четыре"), cost: 15
+ * Ответ: 140, myFun(listOf("Дан иил+два", "Ка тя+десять"), cost: 10
+ * Ответ: IllegalArgumentException::class.java), listOf("+"), cost: 3
+ * Ответ: IllegalArgumentException::class.java), istOf("sadasd+десять", "ыфвфывфыв+'2"), cost: 3
+ */
+fun myFun(marks: List<String>, cost: Int): Int {
+
+    val numbers = listOf("ноль", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять", "десять")
+    var result = 0
+
+    marks.forEach {
+        val parsedPerson = it.split("+");
+        if (parsedPerson.size != 2) {
+            throw IllegalArgumentException();
+        }
+        val number = parsedPerson[1];
+        var numberInt = -1;
+        for (j in numbers.indices) {
+            if (number == numbers[j]) {
+                numberInt = j
+            }
+        }
+        if (numberInt < 0) {
+            throw IllegalArgumentException();
+        }
+        result += numberInt;
+    }
+    result += marks.size;
+    return result * cost;
+}
+
 
 /**
  * Простая (2 балла)
@@ -124,4 +166,20 @@ fun accountInThreeYears(initial: Int, percent: Int): Double = TODO()
  * Пользователь задает целое трехзначное число (например, 478).
  * Необходимо вывести число, полученное из заданного перестановкой цифр в обратном порядке (например, 874).
  */
-fun numberRevert(number: Int): Int = TODO()
+fun numberRevert(number: Int): Int {
+    var inputNumber = number
+    var inputNumber2 = number
+    var result = 0.0
+    var index = 0
+
+    while (inputNumber > 0) {
+        index++
+        inputNumber /= 10
+    }
+    while (inputNumber2 > 0) {
+        index--
+        result += inputNumber2 % 10 * 10.0.pow(index)
+        inputNumber2 /= 10
+    }
+    return result.toInt()
+}

@@ -277,7 +277,55 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+
+// реализовать бинарный поиск, работать будет за n*log(n)
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    // создаем две копии изначального списка, потому что один мы отсортируем, чтобы работал бинарный поиск
+    val newList = arrayListOf<Int>()
+    val oldList = arrayListOf<Int>()
+
+    var firstIndex = -1
+    var secondIndex = -1
+    list.forEach {
+        newList.add(it)
+        oldList.add(it)
+    }
+
+    newList.sort()
+
+    for (i in newList.indices) {
+        val findNumber = number - newList[i]
+        val currentNumber = newList[i]
+
+        var isFindNumber = false
+
+        var leftBorder = 0
+        var rightBorder = newList.size - 1
+
+        // сам бинарный поиск, вернет true, если findNumber есть в списке с учетом того,
+        // что индекс findNumber не совпадает с текущим индексом элемента
+        while (leftBorder <= rightBorder) {
+            val middle = (leftBorder + rightBorder) / 2
+            if (findNumber == newList[middle] && middle != i) {
+                isFindNumber = true
+                break
+            }
+            if (findNumber < newList[middle]) rightBorder = middle - 1
+            else leftBorder = middle + 1
+        }
+
+        if (isFindNumber) {
+            // т.к элемент был найден, то можно пройтись по старому списку и найти значения индексов
+            for (j in 0 until oldList.size) {
+                if (oldList[j] == currentNumber && j != secondIndex && firstIndex == -1) firstIndex = j
+                if (oldList[j] == findNumber && j != firstIndex && secondIndex == -1) secondIndex = j
+                if (firstIndex > 0 && secondIndex > 0) break
+            }
+            return Pair(firstIndex, secondIndex)
+        }
+    }
+    return Pair(-1, -1)
+}
 
 /**
  * Очень сложная (8 баллов)
@@ -300,4 +348,49 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    // списки с массой, ценной, названием каждого предмета
+    // например, у j-ого предмета название names[j], масса masses[j], стоимость values[j]
+    val masses = arrayListOf<Int>()
+    val values = arrayListOf<Int>()
+    val names = arrayListOf<String>()
+    // добавил нулевые элементы, чтобы не путаться с индексами
+    masses.add(0)
+    values.add(0)
+    names.add("")
+    for ((key, value) in treasures) {
+        masses.add(value.first)
+        values.add(value.second)
+        names.add(key)
+    }
+    // матрица с максимальной ценной на каждую массу и кол-во предметов, где масса от 0..capacity
+    val matrix = Array(capacity + 1) { IntArray(values.size + 1) }
+    // матрица со списком для каждой массы и кол-ва предметов(эта матрица нужна, чтобы хранить на каждом этапе список товаров,
+    // чтобы по итогу вывести предметы)
+    val matrixNames = Array(capacity + 1) { Array(values.size + 1) { "" } }
+    for (i in 0..capacity) {
+        for (j in 0..values.size) {
+            matrix[i][j] = 0
+        }
+    }
+
+    // вся логика
+    for (i in 1 until capacity + 1) {
+        for (j in 1 until values.size) {
+            if (i >= masses[j] && (matrix[i - masses[j]][j - 1] + values[j]) > matrix[i][j - 1]) {
+                matrix[i][j] = values[j] + matrix[i - masses[j]][j - 1]
+                matrixNames[i][j] = matrixNames[i - masses[j]][j - 1]
+                matrixNames[i][j] += "${names[j]} "
+            } else {
+                matrix[i][j] = matrix[i][j - 1]
+                matrixNames[i][j] = matrixNames[i][j - 1]
+            }
+        }
+    }
+
+    val lenLastString = matrixNames[capacity][values.size - 1].length
+    if (lenLastString != 0)
+        return matrixNames[capacity][values.size - 1].substring(0, lenLastString - 1).split(" ").toSet()
+    return setOf()
+}

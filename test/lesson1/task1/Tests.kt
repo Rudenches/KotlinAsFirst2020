@@ -1,8 +1,11 @@
 package lesson1.task1
 
+import lesson6.task1.computeDeviceCells
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
+import java.lang.IllegalArgumentException
 import kotlin.math.PI
 
 class Tests {
@@ -82,6 +85,17 @@ class Tests {
         assertEquals(8, thirdDigit(3801))
         assertEquals(1, thirdDigit(100))
         assertEquals(0, thirdDigit(1000))
+    }
+
+    @Test
+    fun myFun() {
+        assertEquals(140, myFun(listOf("Даниил+два", "Катя+десять"), 10));
+        assertEquals(375, myFun(listOf("Даниил+два", "Катя+десять", "Вася+пять", "гена+четыре"), 15));
+        assertEquals(22, myFun(listOf("Катя+десять"), 2));
+        assertEquals(140, myFun(listOf("Дан иил+два", "Ка тя+десять"), 10));
+        assertThrows(IllegalArgumentException::class.java) { myFun(listOf("+"), 3) }
+        assertThrows(IllegalArgumentException::class.java) { myFun(listOf("sadasd+десять", "ыфвфывфыв+'"), 3) }
+        assertThrows(IllegalArgumentException::class.java) { myFun(listOf("Катя+десять", "Егор+2"), 2) };
     }
 
     @Test
